@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>List Your Hostel for Free — HostelKhoj | Student Hostel Directory Kathmandu</title>
+  <meta name="description" content="List your student hostel on HostelKhoj for free. Reach thousands of students searching for accommodation in Kathmandu Valley. Simple form, listed within 24 hours.">
+  <meta name="keywords" content="list hostel Kathmandu, hostel listing Nepal, add hostel HostelKhoj, student hostel directory Nepal, hostel owner Kathmandu">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://hostelkhoj.netlify.app/list-your-hostel.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hostelkhoj.netlify.app/list-your-hostel.html">
+  <meta property="og:title" content="List Your Hostel for Free — HostelKhoj">
+  <meta property="og:description" content="Reach thousands of students searching for hostels in Kathmandu Valley. Free listing, live within 24 hours.">
+  <meta property="og:site_name" content="HostelKhoj">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #faf8f2; color: #1a1a1a; font-size: 15px; line-height: 1.6; }
+
+    .nav { background: #1b3a2d; height: 60px; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { text-decoration: none; font-size: 20px; font-weight: 700; color: #fff; }
+    .nav-logo span { color: #d4a843; }
+    .nav-back { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; display: flex; align-items: center; gap: 5px; transition: color .15s; }
+    .nav-back:hover { color: #fff; }
+
+    .hero { background: #1b3a2d; padding: 2.5rem 2rem; }
+    .hero-inner { max-width: 720px; margin: 0 auto; }
+    .hero-pill { display: inline-block; background: rgba(212,168,67,0.15); color: #d4a843; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; letter-spacing: .5px; margin-bottom: .75rem; }
+    .hero h1 { font-size: 2rem; font-weight: 700; color: #fff; margin-bottom: .5rem; }
+    .hero p { color: rgba(255,255,255,.55); font-size: 14px; }
+
+    .form-wrap { max-width: 720px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+
+    .section-block { background: #fff; border: 1px solid #e8e4d8; border-radius: 14px; padding: 1.75rem; margin-bottom: 1.25rem; }
+    .section-title { font-size: 14px; font-weight: 700; color: #1b3a2d; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 8px; }
+    .section-num { background: #1b3a2d; color: #fff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+
+    .field-row { display: grid; gap: 1rem; margin-bottom: 1rem; }
+    .field-row.two { grid-template-columns: 1fr 1fr; }
+    .field-row.three { grid-template-columns: 1fr 1fr 1fr; }
+    .field-row.one { grid-template-columns: 1fr; }
+
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label { font-size: 12px; font-weight: 700; color: #444; }
+    .field label .req { color: #d4a843; margin-left: 2px; }
+    .field label .hint { font-size: 11px; font-weight: 400; color: #aaa; margin-left: 4px; }
+    .field input, .field select, .field textarea {
+      padding: 10px 13px; border: 1px solid #e0ddd6; border-radius: 9px;
+      font-size: 13px; font-family: inherit; color: #1a1a1a;
+      background: #fff; outline: none; transition: border-color .12s;
+      width: 100%;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: #1b3a2d; }
+    .field input::placeholder, .field textarea::placeholder { color: #bbb; }
+    .field textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+    .field select { appearance: none; cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+
+    /* Maps link field special styling */
+    .maps-field input { border-color: #c6e0d0; background: #f5fbf7; }
+    .maps-field input:focus { border-color: #1b3a2d; background: #fff; }
+    .maps-help { font-size: 11px; color: #888; margin-top: 4px; line-height: 1.5; }
+    .maps-help strong { color: #1b3a2d; }
+
+    /* Radio / checkbox groups */
+    .radio-group, .check-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+    .radio-btn, .check-btn {
+      display: flex; align-items: center; gap: 6px;
+      border: 1px solid #e0ddd6; border-radius: 8px;
+      padding: 6px 12px; cursor: pointer; transition: all .12s;
+      font-size: 13px; font-weight: 500; color: #555;
+      user-select: none;
+    }
+    .radio-btn input, .check-btn input { display: none; }
+    .radio-btn:hover, .check-btn:hover { border-color: #1b3a2d; color: #1b3a2d; }
+    .radio-btn.selected { background: #1b3a2d; color: #fff; border-color: #1b3a2d; }
+    .check-btn.selected { background: #f0fdf4; color: #1b3a2d; border-color: #1b3a2d; font-weight: 600; }
+
+    /* Amenity grid */
+    .amenity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-top: 2px; }
+    .amenity-item {
+      border: 1px solid #e0ddd6; border-radius: 8px; padding: 8px 10px;
+      cursor: pointer; transition: all .12s; display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 500; color: #555; user-select: none;
+    }
+    .amenity-item:hover { border-color: #1b3a2d; }
+    .amenity-item.selected { background: #f0fdf4; border-color: #1b3a2d; color: #1b3a2d; font-weight: 600; }
+    .amenity-item input { display: none; }
+    .amenity-check { width: 16px; height: 16px; border: 1.5px solid #d0d0ca; border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+    .amenity-item.selected .amenity-check { background: #1b3a2d; border-color: #1b3a2d; color: #fff; }
+
+    /* Submit */
+    .submit-area { margin-top: 1.5rem; }
+    .submit-note { font-size: 12px; color: #aaa; margin-bottom: 1rem; line-height: 1.5; }
+    .submit-btn {
+      width: 100%; background: #1b3a2d; color: #fff; border: none;
+      padding: 14px; border-radius: 11px; font-size: 15px; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .15s;
+    }
+    .submit-btn:hover { background: #2a5a3d; }
+    .submit-btn:active { background: #0f2419; }
+
+    /* Success state */
+    .success-screen {
+      display: none; text-align: center; padding: 4rem 2rem;
+      max-width: 480px; margin: 0 auto;
+    }
+    .success-screen.show { display: block; }
+    .form-wrap.hide { display: none; }
+    .success-icon { width: 72px; height: 72px; background: #f0fdf4; border: 2px solid #c6e8d0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 32px; }
+    .success-screen h2 { font-size: 22px; font-weight: 700; color: #1b3a2d; margin-bottom: .5rem; }
+    .success-screen p { color: #888; font-size: 14px; line-height: 1.6; margin-bottom: 1.5rem; }
+    .success-back { display: inline-block; background: #1b3a2d; color: #fff; padding: 10px 24px; border-radius: 9px; text-decoration: none; font-size: 13px; font-weight: 700; }
+
+    /* Validation */
+    .field input.error, .field select.error, .field textarea.error { border-color: #e84c3d; background: #fff8f7; }
+    .field-error { font-size: 11px; color: #e84c3d; margin-top: 3px; display: none; }
+    .field-error.show { display: block; }
+
+    @media (max-width: 600px) {
+      .field-row.two, .field-row.three { grid-template-columns: 1fr; }
+      .form-wrap { padding: 1.5rem 1rem 3rem; }
+      .hero { padding: 2rem 1rem; }
+      .section-block { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="hostelkhoj.html">Hostel<span>Khoj</span></a>
+  <a class="nav-back" href="hostelkhoj.html">← Back to directory</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-pill">Free Listing</div>
+    <h1>List your hostel on HostelKhoj</h1>
+    <p>Fill in your hostel details below. We'll add your listing to the directory within 24 hours — for free.</p>
+  </div>
+</div>
+
+<!-- SUCCESS SCREEN -->
+<div class="success-screen" id="successScreen">
+  <div class="success-icon">✓</div>
+  <h2>Submission received!</h2>
+  <p>Thank you for listing your hostel. We'll review your details and add your hostel to the HostelKhoj directory within 24 hours. Students will be able to find you shortly.</p>
+  <a class="success-back" href="hostelkhoj.html">Back to HostelKhoj</a>
+</div>
+
+<div class="form-wrap" id="formWrap">
+
+  <!-- SECTION 1: BASIC INFO -->
+  <div class="section-block">
+    <div class="section-title"><span class="section-num">1</span> Basic Information</div>
+    <div class="field-row two">
+      <div class="field">
+        <label>Hostel Name <span class="req">*</span></label>
+        <input type="text" id="hostelName" placeholder="e.g. New Heaven Boys Hostel" />
+        <span class="field-error" id="err-hostelName">Please enter the hostel name</span>
+      </div>
+      <div class="field">
+        <label>Hostel Type <span class="req">*</span></label>
+        <select id="hostelType">
+          <option value="">— Select type —</option>
+          <option value="Boys">Boys only</option>
+          <option value="Girls">Girls only</option>
+          <option value="Boys & Girls">Boys & Girls (mixed)</option>
+        </select>
+        <span class="field-error" id="err-hostelType">Please select the hostel type</span>
+      </div>
+    </div>
+    <div class="field-row two">
+      <div class="field">
+        <label>Owner / Contact Person Name <span class="req">*</span></label>
+        <input type="text" id="ownerName" placeholder="e.g. Ram Bahadur Shrestha" />
+        <span class="field-error" id="err-ownerName">Please enter the contact name</span>
+      </div>
+      <div class="field">
+        <label>Phone Number <span class="req">*</span></label>
+        <input type="tel" id="phone" placeholder="98XXXXXXXX" />
+        <span class="field-error" id="err-phone">Please enter a valid phone number</span>
+      </div>
+    </div>
+    <div class="field-row two">
+      <div class="field">
+        <label>Email Address <span class="hint">(optional)</span></label>
+        <input type="email" id="email" placeholder="your@email.com" />
+      </div>
+      <div class="field">
+        <label>Monthly Rent Range <span class="hint">(optional)</span></label>
+        <input type="text" id="rent" placeholder="e.g. Rs 3,000 – Rs 5,000 / month" />
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: LOCATION -->
+  <div class="section-block">
+    <div class="section-title"><span class="section-num">2</span> Location</div>
+    <div class="field-row two">
+      <div class="field">
+        <label>Full Address <span class="req">*</span></label>
+        <input type="text" id="address" placeholder="e.g. 31 Devkota Sadak, Koteshwor, Lalitpur" />
+        <span class="field-error" id="err-address">Please enter the full address</span>
+      </div>
+      <div class="field">
+        <label>Area <span class="req">*</span></label>
+        <select id="area">
+          <option value="">— Select area —</option>
+          <option value="Baneshwor">Baneshwor</option>
+          <option value="Koteshwor">Koteshwor / Balkumari</option>
+          <option value="Kumaripati">Kumaripati</option>
+          <option value="Pulchowk">Pulchowk / Jawalakhel</option>
+          <option value="Thamel">Thamel</option>
+          <option value="Kirtipur">Kirtipur</option>
+          <option value="Bhaktapur">Bhaktapur</option>
+          <option value="Other">Other</option>
+        </select>
+        <span class="field-error" id="err-area">Please select an area</span>
+      </div>
+    </div>
+
+    <div class="field one maps-field" style="margin-bottom:0">
+      <label>Google Maps Link <span class="req">*</span></label>
+      <input type="url" id="mapsLink" placeholder="https://maps.app.goo.gl/..." />
+      <p class="maps-help">
+        <strong>How to get your Google Maps link:</strong> Open Google Maps on your phone → Search your hostel or drop a pin on its exact location → Tap Share → Copy Link → paste it here.
+      </p>
+      <span class="field-error" id="err-mapsLink">Please paste your Google Maps link</span>
+    </div>
+  </div>
+
+  <!-- SECTION 3: NEARBY COLLEGES -->
+  <div class="section-block">
+    <div class="section-title"><span class="section-num">3</span> Nearby Colleges <span style="font-size:12px;font-weight:400;color:#aaa;margin-left:4px;">Tick all that students from these colleges could walk or take a short ride to your hostel</span></div>
+    <div class="check-group" id="collegeGroup">
+      <label class="check-btn" onclick="toggleCheck(this)"><input type="checkbox" value="IOE Pulchowk Campus">IOE Pulchowk Campus</label>
+      <label class="check-btn" onclick="toggleCheck(this)"><input type="checkbox" value="Prasadi Academy">Prasadi Academy</label>
+      <label class="check-btn" onclick="toggleCheck(this)"><input type="checkbox" value="Bluebird College">Bluebird College</label>
+      <label class="check-btn" onclick="toggleCheck(this)"><input type="checkbox" value="United Academy">United Academy</label>
+      <label class="check-btn" onclick="toggleCheck(this)"><input type="checkbox" value="Shanker Dev Campus">Shanker Dev Campus</label>
+      <label class="check-btn" onclick="toggleCheck(this)"><input type="checkbox" value="Tri-Chandra Campus">Tri-Chandra Campus</label>
+      <label class="check-btn" onclick="toggleCheck(this)"><input type="checkbox" value="Nepal Commerce Campus">Nepal Commerce Campus</label>
+      <label class="check-btn" onclick="toggleCheck(this)"><input type="checkbox" value="Patan Multiple Campus">Patan Multiple Campus</label>
+      <label class="check-btn" onclick="toggleCheck(this)"><input type="checkbox" value="St. Xavier's College">St. Xavier's College</label>
+      <label class="check-btn" onclick="toggleCheck(this)"><input type="checkbox" value="Balkumari College">Balkumari College</label>
+      <label class="check-btn" onclick="toggleCheck(this)"><input type="checkbox" value="Khwopa Engineering College">Khwopa Engineering College</label>
+      <label class="check-btn" onclick="toggleCheck(this)"><input type="checkbox" value="Kathmandu Model College">Kathmandu Model College</label>
+    </div>
+  </div>
+
+  <!-- SECTION 4: AMENITIES -->
+  <div class="section-block">
+    <div class="section-title"><span class="section-num">4</span> Amenities <span style="font-size:12px;font-weight:400;color:#aaa;margin-left:4px;">Select all that your hostel provides</span></div>
+    <div class="amenity-grid" id="amenityGrid">
+      <label class="amenity-item" onclick="toggleAmenity(this)"><input type="checkbox" value="WiFi"><span class="amenity-check"></span>WiFi</label>
+      <label class="amenity-item" onclick="toggleAmenity(this)"><input type="checkbox" value="Meals / Food"><span class="amenity-check"></span>Meals / Food</label>
+      <label class="amenity-item" onclick="toggleAmenity(this)"><input type="checkbox" value="Hot Water 24/7"><span class="amenity-check"></span>Hot Water 24/7</label>
+      <label class="amenity-item" onclick="toggleAmenity(this)"><input type="checkbox" value="Laundry Service"><span class="amenity-check"></span>Laundry Service</label>
+      <label class="amenity-item" onclick="toggleAmenity(this)"><input type="checkbox" value="Study Room"><span class="amenity-check"></span>Study Room</label>
+      <label class="amenity-item" onclick="toggleAmenity(this)"><input type="checkbox" value="CCTV Security"><span class="amenity-check"></span>CCTV Security</label>
+      <label class="amenity-item" onclick="toggleAmenity(this)"><input type="checkbox" value="Air Conditioning"><span class="amenity-check"></span>Air Conditioning</label>
+      <label class="amenity-item" onclick="toggleAmenity(this)"><input type="checkbox" value="Parking"><span class="amenity-check"></span>Parking</label>
+      <label class="amenity-item" onclick="toggleAmenity(this)"><input type="checkbox" value="Gym"><span class="amenity-check"></span>Gym</label>
+      <label class="amenity-item" onclick="toggleAmenity(this)"><input type="checkbox" value="Library"><span class="amenity-check"></span>Library</label>
+      <label class="amenity-item" onclick="toggleAmenity(this)"><input type="checkbox" value="Rooftop / Garden"><span class="amenity-check"></span>Rooftop / Garden</label>
+      <label class="amenity-item" onclick="toggleAmenity(this)"><input type="checkbox" value="Drinking Water"><span class="amenity-check"></span>Drinking Water</label>
+    </div>
+  </div>
+
+  <!-- SECTION 5: DESCRIPTION -->
+  <div class="section-block">
+    <div class="section-title"><span class="section-num">5</span> About Your Hostel</div>
+    <div class="field-row one">
+      <div class="field">
+        <label>Brief Description <span class="hint">(shown to students — keep it honest and friendly)</span></label>
+        <textarea id="description" placeholder="e.g. Clean and quiet hostel with home-cooked meals. Safe environment, great for CEE and board exam preparation. Walking distance from Prasadi Academy and Bluebird College..."></textarea>
+      </div>
+    </div>
+    <div class="field-row two">
+      <div class="field">
+        <label>Number of Rooms <span class="hint">(optional)</span></label>
+        <input type="number" id="rooms" placeholder="e.g. 20" min="1" />
+      </div>
+      <div class="field">
+        <label>Capacity (total students) <span class="hint">(optional)</span></label>
+        <input type="number" id="capacity" placeholder="e.g. 40" min="1" />
+      </div>
+    </div>
+    <div class="field-row one">
+      <div class="field">
+        <label>Anything else you'd like students to know? <span class="hint">(optional)</span></label>
+        <textarea id="extra" style="min-height:70px" placeholder="e.g. We allow students to move in from Shrawan 1. CCTV in all common areas. Warden available 24/7..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-area">
+    <p class="submit-note">By submitting, you confirm the details are accurate. HostelKhoj may contact you at the number provided before publishing your listing. Listing is free — no payment required.</p>
+    <button class="submit-btn" onclick="submitForm()">Submit My Hostel for Listing →</button>
+  </div>
+
+</div>
+
+<script>
+function toggleCheck(el) {
+  el.classList.toggle('selected');
+  el.querySelector('input').checked = el.classList.contains('selected');
+}
+
+function toggleAmenity(el) {
+  el.classList.toggle('selected');
+  const ck = el.querySelector('.amenity-check');
+  ck.textContent = el.classList.contains('selected') ? '✓' : '';
+  el.querySelector('input').checked = el.classList.contains('selected');
+}
+
+function getChecked(groupId) {
+  return [...document.querySelectorAll(`#${groupId} input:checked`)].map(i => i.value);
+}
+
+function val(id) { return document.getElementById(id).value.trim(); }
+
+function setError(id, show) {
+  const input = document.getElementById(id);
+  const err = document.getElementById('err-' + id);
+  if (show) {
+    input.classList.add('error');
+    if (err) { err.classList.add('show'); }
+  } else {
+    input.classList.remove('error');
+    if (err) { err.classList.remove('show'); }
+  }
+  return !show;
+}
+
+function submitForm() {
+  let valid = true;
+  const required = [
+    { id: 'hostelName',  msg: true },
+    { id: 'hostelType',  msg: true },
+    { id: 'ownerName',   msg: true },
+    { id: 'phone',       msg: true },
+    { id: 'address',     msg: true },
+    { id: 'area',        msg: true },
+    { id: 'mapsLink',    msg: true },
+  ];
+  required.forEach(({ id }) => {
+    const ok = setError(id, !val(id));
+    if (!ok) valid = false;
+  });
+  if (!valid) {
+    document.querySelector('.field input.error, .field select.error')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  const colleges  = getChecked('collegeGroup').join(', ') || 'None selected';
+  const amenities = getChecked('amenityGrid').join(', ')  || 'None selected';
+
+  const subject = encodeURIComponent(`New Hostel Listing Request: ${val('hostelName')}`);
+  const body = encodeURIComponent(
+`New hostel listing submitted via HostelKhoj
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HOSTEL DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Hostel Name    : ${val('hostelName')}
+Type           : ${val('hostelType')}
+Owner Name     : ${val('ownerName')}
+Phone          : ${val('phone')}
+Email          : ${val('email') || 'Not provided'}
+Monthly Rent   : ${val('rent') || 'Not provided'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+LOCATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Address        : ${val('address')}
+Area           : ${val('area')}
+Google Maps    : ${val('mapsLink')}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+NEARBY COLLEGES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${colleges}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+AMENITIES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${amenities}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ABOUT THE HOSTEL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Rooms          : ${val('rooms') || 'Not provided'}
+Capacity       : ${val('capacity') || 'Not provided'}
+Description    : ${val('description') || 'Not provided'}
+Extra Notes    : ${val('extra') || 'Not provided'}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`
+  );
+
+  window.location.href = `mailto:hostelkhoj26@gmail.com?subject=${subject}&body=${body}`;
+
+  setTimeout(() => {
+    document.getElementById('formWrap').classList.add('hide');
+    document.getElementById('successScreen').classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 800);
+}
+
+// Clear error on input
+document.querySelectorAll('input, select, textarea').forEach(el => {
+  el.addEventListener('input', () => {
+    el.classList.remove('error');
+    const err = document.getElementById('err-' + el.id);
+    if (err) err.classList.remove('show');
+  });
+});
+</script>
+</body>
+</html>
