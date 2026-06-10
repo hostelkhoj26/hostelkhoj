@@ -226,8 +226,14 @@
       </div>
       <div class="fg"><label>Phone</label><input type="tel" id="fPhone" placeholder="+977 98XXXXXXXX"></div>
       <div class="fg"><label>Google Place ID <span style="font-weight:400;color:#aaa;font-size:11px">(from Maps URL)</span></label><input type="text" id="fPlaceId" placeholder="ChIJ..."></div>
-      <div class="fg"><label>Latitude * <span style="font-weight:400;color:#aaa;font-size:11px">(from Google Maps)</span></label><input type="number" id="fLat" placeholder="27.6712" step="any"></div>
-      <div class="fg"><label>Longitude *</label><input type="number" id="fLng" placeholder="85.3164" step="any"></div>
+      <div class="fg" style="grid-column:1/-1">
+        <label>Google Maps Link * <span style="font-weight:400;color:#aaa;font-size:11px">Paste the link from Google Maps — we extract coordinates automatically</span></label>
+        <input type="url" id="fMapsLink" placeholder="https://maps.app.goo.gl/... or paste a full Google Maps URL">
+        <label style="display:inline-flex;align-items:center;gap:7px;margin-top:7px;cursor:pointer;user-select:none;font-size:12px;color:#888;font-weight:400">
+          <input type="checkbox" id="fNoMaps" onchange="toggleNoMaps(this)" style="width:14px;height:14px;cursor:pointer;accent-color:#1b3a2d">
+          I don't have a Google Maps link right now — add it later
+        </label>
+      </div>
       <div class="fg"><label>Rating (0–5)</label><input type="number" id="fRating" placeholder="4.8" min="0" max="5" step="0.1"></div>
       <div class="fg"><label>No. of Reviews</label><input type="number" id="fReviews" placeholder="21" min="0"></div>
     </div>
@@ -291,7 +297,29 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let hostels = [];
 let imgHostel = null;
 
-/* ── AUTH ── */
+/* ── COORD EXTRACTOR ── */
+function extractCoords(url) {
+  // @lat,lng format — most common in full Google Maps URLs
+  let m = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+  // query=lat,lng format
+  m = url.match(/query=(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+  // ll=lat,lng format
+  m = url.match(/ll=(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+  // Short links (maps.app.goo.gl) — coords not extractable client-side
+  return null;
+}
+
+function toggleNoMaps(cb) {
+  const input = document.getElementById('fMapsLink');
+  input.disabled = cb.checked;
+  input.style.opacity = cb.checked ? '0.4' : '1';
+  if (cb.checked) input.value = '';
+}
+
+
 async function login() {
   const email = document.getElementById('lEmail').value.trim();
   const pass  = document.getElementById('lPass').value;
@@ -407,8 +435,10 @@ function openForm(id) {
   document.getElementById('fArea').value    = h?.area || '';
   document.getElementById('fPhone').value   = h?.phone || '';
   document.getElementById('fPlaceId').value = h?.place_id || '';
-  document.getElementById('fLat').value     = h?.lat || '';
-  document.getElementById('fLng').value     = h?.lng || '';
+  document.getElementById('fMapsLink').value = h?.maps_link || '';
+  const noMapsEl = document.getElementById('fNoMaps');
+  noMapsEl.checked = false;
+  toggleNoMaps(noMapsEl);
   document.getElementById('fRating').value  = h?.rating || '';
   document.getElementById('fReviews').value = h?.reviews || '';
   document.getElementById('fSnippet').value = h?.snippet || '';
@@ -434,14 +464,18 @@ async function saveHostel() {
   const type = document.getElementById('fType').value;
   const addr = document.getElementById('fAddr').value.trim();
   const area = document.getElementById('fArea').value;
-  const lat  = parseFloat(document.getElementById('fLat').value);
-  const lng  = parseFloat(document.getElementById('fLng').value);
-  if (!name || !type || !addr || !area || isNaN(lat) || isNaN(lng)) {
+  const noMaps  = document.getElementById('fNoMaps').checked;
+  const mapsLink = document.getElementById('fMapsLink').value.trim();
+  if (!name || !type || !addr || !area || (!noMaps && !mapsLink)) {
     toast('Please fill in all required fields', true); return;
   }
+  const coords = extractCoords(mapsLink);
   const colleges = [...document.querySelectorAll('#fColleges input:checked')].map(i => i.value);
   const data = {
-    name, type, addr, area, lat, lng, colleges, active: true,
+    name, type, addr, area, colleges, active: true,
+    maps_link: mapsLink,
+    lat:      coords?.lat || null,
+    lng:      coords?.lng || null,
     phone:    document.getElementById('fPhone').value.trim() || null,
     place_id: document.getElementById('fPlaceId').value.trim() || null,
     rating:   parseFloat(document.getElementById('fRating').value) || 0,
