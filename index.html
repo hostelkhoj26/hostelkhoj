@@ -372,10 +372,24 @@
     <div class="filter-divider"></div>
     <select class="filter-select" id="areaSelect" onchange="filterAndRender()">
       <option value="">All Areas</option>
-      <option value="baneshwor">Baneshwor</option>
-      <option value="koteshwor">Koteshwor</option>
-      <option value="kumaripati">Kumaripati</option>
-      <option value="pulchowk">Pulchowk</option>
+      <optgroup label="Lalitpur">
+        <option value="kumaripati">Kumaripati</option>
+        <option value="pulchowk">Pulchowk / Jawalakhel</option>
+        <option value="lagankhel">Lagankhel</option>
+        <option value="satdobato">Satdobato</option>
+      </optgroup>
+      <optgroup label="Kathmandu">
+        <option value="baneshwor">Baneshwor / New Baneshwor</option>
+        <option value="koteshwor">Koteshwor / Balkumari</option>
+        <option value="putalisadak">Putalisadak</option>
+        <option value="bagbazar">Bagbazar</option>
+        <option value="dillibazar">Dillibazar</option>
+        <option value="naxal">Naxal / Lazimpat</option>
+        <option value="chabahil">Chabahil</option>
+        <option value="kirtipur">Kirtipur</option>
+        <option value="minbhawan">Minbhawan</option>
+        <option value="thamel">Thamel</option>
+      </optgroup>
     </select>
     <div class="filter-divider"></div>
     <button class="chip level-chip active" onclick="setLevel('all',this)">All Levels</button>
@@ -627,7 +641,8 @@ function filterAndRender() {
         </div>
         <span class="hc-tag ${tc(h.type)}">${tl(h.type)}</span>
       </div>
-      <div class="hc-addr">📍 ${h.addr}</div>
+      <div class="hc-addr">📍 ${h.addr}${h.custom_area ? ` · <span style="color:#1b3a2d;font-weight:600">${h.custom_area}</span>` : ''}</div>
+      ${h.extra_colleges ? `<div style="font-size:11px;color:#888;margin-top:-4px">🎓 Also near: ${h.extra_colleges}</div>` : ''}
       <div class="hc-rating">
         <span class="hc-stars">${stars(h.rating)}</span>
         <span class="hc-rnum">${h.rating.toFixed(1)}</span>

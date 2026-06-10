@@ -218,10 +218,25 @@
       <div class="fg"><label>Area *</label>
         <select id="fArea">
           <option value="">— Select —</option>
-          <option value="baneshwor">Baneshwor</option>
-          <option value="koteshwor">Koteshwor</option>
-          <option value="kumaripati">Kumaripati</option>
-          <option value="pulchowk">Pulchowk</option>
+          <optgroup label="── Lalitpur ──">
+            <option value="kumaripati">Kumaripati</option>
+            <option value="pulchowk">Pulchowk / Jawalakhel</option>
+            <option value="lagankhel">Lagankhel</option>
+            <option value="satdobato">Satdobato</option>
+          </optgroup>
+          <optgroup label="── Kathmandu ──">
+            <option value="baneshwor">Baneshwor / New Baneshwor</option>
+            <option value="koteshwor">Koteshwor / Balkumari</option>
+            <option value="putalisadak">Putalisadak</option>
+            <option value="bagbazar">Bagbazar</option>
+            <option value="dillibazar">Dillibazar</option>
+            <option value="naxal">Naxal / Lazimpat</option>
+            <option value="chabahil">Chabahil</option>
+            <option value="kirtipur">Kirtipur</option>
+            <option value="minbhawan">Minbhawan</option>
+            <option value="thamel">Thamel</option>
+          </optgroup>
+          <option value="other">Other</option>
         </select>
       </div>
       <div class="fg"><label>Phone</label><input type="tel" id="fPhone" placeholder="+977 98XXXXXXXX"></div>
@@ -245,34 +260,34 @@
     <div class="sec-label">Nearby Colleges</div>
     <p style="font-size:11px;color:#aaa;margin-bottom:.5rem">High School / +2</p>
     <div class="college-chips" id="fColleges">
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="prasadi">Prasadi Academy</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="bluebird">Bluebird College</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="united">United Academy</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="omega">Omega College</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="moliss">MOLISS</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="dav">DAV College NEB</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="campion">Campion Academy</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="xavier">St. Xavier's College</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="trinity">Trinity Int'l College</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="kmc">KMC Lalitpur</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="vsniketan">VS Niketan</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="xavierint">Xavier Int'l College</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="prasadi">Prasadi Academy</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="bluebird">Bluebird College</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="united">United Academy</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="omega">Omega College</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="moliss">MOLISS</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="dav">DAV College NEB</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="campion">Campion Academy</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="xavier">St. Xavier's College</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="trinity">Trinity Int'l College</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="kmc">KMC Lalitpur</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="vsniketan">VS Niketan</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="xavierint">Xavier Int'l College</label>
     </div>
     <p style="font-size:11px;color:#aaa;margin:.75rem 0 .5rem">College / Bachelor's</p>
     <div class="college-chips">
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="ioe">IOE Pulchowk</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="shankerdev">Shanker Dev Campus</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="trichandra">Tri-Chandra Campus</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="ncommerce">Nepal Commerce Campus</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="patan">Patan Multiple Campus</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="patan_prof">Patan College (PCPS)</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="balkumari">Balkumari College</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="padmakanya">Padmakanya Campus</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="ratnarajya">Ratna Rajya Campus</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="herald">Herald College</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="islington">Islington College</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="ncit">NCIT College</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="kist">KIST College</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="ioe">IOE Pulchowk</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="shankerdev">Shanker Dev Campus</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="trichandra">Tri-Chandra Campus</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="ncommerce">Nepal Commerce Campus</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="patan">Patan Multiple Campus</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="patan_prof">Patan College (PCPS)</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="balkumari">Balkumari College</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="padmakanya">Padmakanya Campus</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="ratnarajya">Ratna Rajya Campus</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="herald">Herald College</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="islington">Islington College</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="ncit">NCIT College</label>
+      <label class="c-chip" onclick="toggleChip(this,event)"><input type="checkbox" value="kist">KIST College</label>
     </div>
 
     <!-- PHOTOS SECTION — only shown when editing an existing hostel -->
@@ -286,6 +301,18 @@
       <input type="file" id="formFileInput" accept="image/*" multiple style="display:none" onchange="formUploadImages(event)">
       <p class="up-prog" id="formUpProg">Uploading photos...</p>
       <div class="img-grid" id="formImgGrid"></div>
+    </div>
+
+    <!-- MANUAL COLLEGE & AREA -->
+    <div class="grid2" style="margin-top:.75rem">
+      <div class="fg">
+        <label>Additional Colleges <span style="font-weight:400;color:#aaa;font-size:11px">Not in the list above? Type them here</span></label>
+        <input type="text" id="fExtraColleges" placeholder="e.g. Global Academy, Saipal Academy">
+      </div>
+      <div class="fg">
+        <label>Custom Area / Landmark <span style="font-weight:400;color:#aaa;font-size:11px">If your area isn't in the dropdown</span></label>
+        <input type="text" id="fCustomArea" placeholder="e.g. Near Satdobato, Ekantakuna">
+      </div>
     </div>
 
     <!-- NEW HOSTEL NOTICE -->
@@ -473,7 +500,9 @@ function openForm(id) {
   document.getElementById('fArea').value    = h?.area || '';
   document.getElementById('fPhone').value   = h?.phone || '';
   document.getElementById('fPlaceId').value = h?.place_id || '';
-  document.getElementById('fMapsLink').value = h?.maps_link || '';
+  document.getElementById('fMapsLink').value      = h?.maps_link || '';
+  document.getElementById('fExtraColleges').value = h?.extra_colleges || '';
+  document.getElementById('fCustomArea').value     = h?.custom_area || '';
   const noMapsEl = document.getElementById('fNoMaps');
   noMapsEl.checked = false;
   toggleNoMaps(noMapsEl);
@@ -496,7 +525,8 @@ function openForm(id) {
 
 function closeForm() { document.getElementById('formOverlay').classList.remove('open'); }
 
-function toggleChip(el) {
+function toggleChip(el, e) {
+  if (e) e.preventDefault();
   el.classList.toggle('on');
   el.querySelector('input').checked = el.classList.contains('on');
 }
@@ -517,6 +547,8 @@ async function saveHostel() {
   const data = {
     name, type, addr, area, colleges, active: true,
     maps_link: mapsLink,
+    extra_colleges: document.getElementById('fExtraColleges').value.trim() || null,
+    custom_area:    document.getElementById('fCustomArea').value.trim() || null,
     lat:      coords?.lat || null,
     lng:      coords?.lng || null,
     phone:    document.getElementById('fPhone').value.trim() || null,
