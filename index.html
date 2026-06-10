@@ -137,9 +137,6 @@
     .hs-label { font-size: 11px; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .6px; }
 
     /* ── AD ── */
-    .ad-strip { background: #fff; border-bottom: 1px solid #e8e4d8; padding: .75rem 2rem; text-align: center; }
-    .ad-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #ccc; margin-bottom: 4px; }
-    .ad-slot { max-width: 728px; margin: 0 auto; height: 90px; background: #f9f8f4; border: 1.5px dashed #ddd; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #bbb; }
 
     /* ── FILTER BAR ── */
     .filter-bar { background: #fff; border-bottom: 1px solid #e8e4d8; padding: 0 2rem; position: sticky; top: 60px; z-index: 100; }
@@ -361,11 +358,7 @@
   </div>
 </section>
 
-<!-- AD -->
-<div class="ad-strip">
-  <p class="ad-label">Advertisement</p>
-  <div class="ad-slot">📢 Google AdSense (728×90) — replace with your AdSense code</div>
-</div>
+
 
 <!-- FILTER BAR -->
 <div class="filter-bar">
@@ -499,30 +492,7 @@ const COLLEGES = {
   patan_prof:{ name:'Patan College (PCPS)',         level:'college',    lat:27.6730, lng:85.3160 },
 };
 
-let HOSTELS = [
-  { id:1,  name:"New Heaven Boys Hostel",           addr:"31 Devkota Sadak, Koteshwor",         area:"koteshwor",  type:"boys",  rating:4.8, reviews:217, lat:27.7010966, lng:85.3400163, phone:"+977 976-7300495", snippet:"Per-floor WiFi, gym, library and garden. Supportive staff — truly feels like home.", placeId:"ChIJV2LiYpsZ6zkRq2KU_9fLv5w", featured:false, colleges:['balkumari','kmc','ncit','ncommerce'] },
-  { id:2,  name:"Blissful Girls Hostel",             addr:"Rudra Mati Marg, Koteshwor",          area:"koteshwor",  type:"girls", rating:4.7, reviews:47,  lat:27.7001951, lng:85.3333734, phone:"+977 984-1310355", snippet:"Clean and quiet. Perfect environment for CEE and board exam preparation.", placeId:"ChIJbQCN1ZcZ6zkRZ1auDlxlt5Y", featured:true,  colleges:['balkumari','kmc','ncit','shankerdev'] },
-  { id:3,  name:"Central Valley Hostel",             addr:"Baneshwor, Kathmandu",                area:"baneshwor",  type:"boys",  rating:4.6, reviews:49,  lat:27.7005718, lng:85.3304246, phone:"+977 976-5414444", snippet:"Best student hostel at an affordable price. Delicious food, staff feel like family.", placeId:"ChIJ3ToaklYZ6zkRTtcG2gtH-Bk", featured:true,  colleges:['shankerdev','ncommerce','xavier','ratnarajya','islington','vsniketan'] },
-  { id:4,  name:"SRIJA Girls Hostel",                addr:"Tank Prasad Ghumti Sadak, Baneshwor", area:"baneshwor",  type:"girls", rating:4.5, reviews:31,  lat:27.6998548, lng:85.3271409, phone:"+977 981-0315120", snippet:"Safe and welcoming. The warden cares for every girl like a parent. Truly a second home.", placeId:"ChIJsxZfCQAZ6zkRMQ35gwEeWtY", featured:true,  colleges:['shankerdev','ncommerce','xavier','ratnarajya','islington'] },
-  { id:5,  name:"Mount Everest Boys & Girls Hostel", addr:"Kumari Marg, Baneshwor",              area:"baneshwor",  type:"both",  rating:4.3, reviews:185, lat:27.7073067, lng:85.3246228, phone:"+977 985-1169318", snippet:"All amenities at a reasonable cost. Good food, WiFi, and a great study atmosphere.", placeId:"ChIJ71Y6m1kZ6zkRI3rduexcDQk", featured:false, colleges:['shankerdev','trichandra','ncommerce','ratnarajya','herald','trinity'] },
-  { id:6,  name:"Narayan Boys Hostel",               addr:"New Baneshwor, Kathmandu",            area:"baneshwor",  type:"boys",  rating:4.4, reviews:17,  lat:27.7021265, lng:85.3318846, phone:"+977 984-5041458", snippet:"Best food and peaceful environment. Highly recommended for students.", placeId:"ChIJqw95ji0Z6zkRhEu192VGW3E", featured:false, colleges:['shankerdev','ncommerce','ratnarajya','islington','vsniketan'] },
-  { id:7,  name:"The Best Girls Hostel",             addr:"Setopull, Baneshwor",                 area:"baneshwor",  type:"girls", rating:4.1, reviews:81,  lat:27.7016434, lng:85.3350632, phone:"+977 986-0922832", snippet:"Clean rooms with study tables and book racks. 24/7 hot and cold drinking water.", placeId:"ChIJISSCNfIZ6zkRG6uYYgvZ_dY", featured:false, colleges:['shankerdev','ncommerce','ratnarajya','islington','vsniketan'] },
-  { id:8,  name:"The Best Boys Hostel",              addr:"Seto Pul, Baneshwor",                 area:"baneshwor",  type:"boys",  rating:4.0, reviews:90,  lat:27.7013969, lng:85.3350903, phone:"+977 986-0922832", snippet:"Peaceful environment great for exam prep. Decent food and comfortable rooms.", placeId:"ChIJt_o6xvYZ6zkRZdPkVBy8I1o", featured:false, colleges:['shankerdev','ncommerce','ratnarajya','islington','vsniketan'] },
-  { id:9,  name:"Rauniyar Boys Hostel",              addr:"Balkumari, Lalitpur",                 area:"koteshwor",  type:"boys",  rating:4.5, reviews:172, lat:27.6724090, lng:85.3444671, phone:"+977 981-5252854", snippet:"Best in Balkumari. Peaceful rooms, great food, sports activities, easy highway access.", placeId:"ChIJ68-LB8cZ6zkRDIuJmtWz5tI", featured:false, colleges:['balkumari','kmc','ncit'] },
-  { id:10, name:"Destination Girls Hostel",          addr:"Balkumari, Lalitpur",                 area:"koteshwor",  type:"girls", rating:5.0, reviews:9,   lat:27.6935989, lng:85.3442233, phone:null,               snippet:"Safe, clean and peaceful. Highly recommended for students and working ladies.", placeId:"ChIJ8U0WcOMZ6zkRPkYlI33Q2ps", featured:false, colleges:['balkumari','kmc','ncit'] },
-  { id:11, name:"Padma Girls Hostel",                addr:"Manbhawan Marg, Kumaripati",          area:"kumaripati", type:"girls", rating:4.8, reviews:21,  lat:27.6712855, lng:85.3164754, phone:"+977 985-1236346", snippet:"Best hostel in town. Good food, homely environment, and prime location near colleges.", placeId:"ChIJ6XX8ZtQZ6zkRY4sUxBqvn_4", featured:false, colleges:['prasadi','bluebird','united','omega','moliss','kist','patan_prof','patan'] },
-  { id:12, name:"Lifeline Boys Hostel",              addr:"Near Bluebird & Prasadi, Kumaripati", area:"kumaripati", type:"boys",  rating:5.0, reviews:15,  lat:27.6700918, lng:85.3197443, phone:"+977 985-1121345", snippet:"Basketball, badminton and table tennis. Delicious home-cooked food. Prime location.", placeId:"ChIJXzXiCQAZ6zkRlMxTU3UelPE", featured:false, colleges:['prasadi','bluebird','united','omega','moliss','kist','patan_prof','patan'] },
-  { id:13, name:"City Boy's Hostel",                 addr:"Kumaripati, Dakshinkali St",          area:"kumaripati", type:"boys",  rating:4.6, reviews:14,  lat:27.6680189, lng:85.3186642, phone:"+977 984-1029219", snippet:"Clean rooms, friendly staff, good food, and reliable WiFi. Feels like home.", placeId:"ChIJGa8qeQAZ6zkRZWCYmzZP5O0", featured:false, colleges:['prasadi','bluebird','united','omega','moliss','campion'] },
-  { id:14, name:"Mid Town Boys Hostel",              addr:"Shanti Marg, Kumaripati",             area:"kumaripati", type:"boys",  rating:4.1, reviews:79,  lat:27.6654113, lng:85.3157539, phone:"+977 985-1167133", snippet:"Great location near Prasadi and United Academy. Clean rooms with a family atmosphere.", placeId:"ChIJg35uZwAZ6zkR7ndXGfu5WCo", featured:false, colleges:['prasadi','bluebird','united','omega','moliss','campion'] },
-  { id:15, name:"Patan Girls Hostel",                addr:"Mahalaxmisthan Rd, Kumaripati",       area:"kumaripati", type:"girls", rating:4.4, reviews:28,  lat:27.6692432, lng:85.3190293, phone:"+977 986-9035251", snippet:"Safe with CCTV, fast WiFi, good food, and a clean peaceful atmosphere.", placeId:"ChIJqakz7LYZ6zkRrezkRL7hsYo", featured:false, colleges:['prasadi','bluebird','united','omega','moliss','patan_prof','patan'] },
-  { id:16, name:"EZE Girls Hostel",                  addr:"Kumaripati, Lalitpur",                area:"kumaripati", type:"girls", rating:3.8, reviews:10,  lat:27.6705743, lng:85.3216937, phone:"+977 980-1973120", snippet:"Good and friendly environment. Convenient location near Kumaripati colleges.", placeId:"ChIJs-rc6kgZ6zkRB5cpwnhgRfA", featured:false, colleges:['prasadi','bluebird','united','omega','moliss'] },
-  { id:17, name:"Mountain Boys Hostel",              addr:"Kulkhya Marg, Kumaripati",            area:"kumaripati", type:"boys",  rating:4.3, reviews:27,  lat:27.6716958, lng:85.3198514, phone:"+977 984-9154695", snippet:"Good and peaceful environment for students. Well-managed facilities and nice food.", placeId:"ChIJR74eqKsZ6zkRnffuCqRGnM0", featured:false, colleges:['prasadi','bluebird','united','omega','moliss','patan_prof','patan'] },
-  { id:18, name:"Jawalakhel Boys Hostel",            addr:"Pulchowk - Dhobighat Rd, Lalitpur",   area:"pulchowk",   type:"boys",  rating:5.0, reviews:55,  lat:27.6756398, lng:85.3077023, phone:"+977 985-1122078", snippet:"Stayed 2 years with no complaints. Great food, clean rooms, excellent laundry service.", placeId:"ChIJGx9lxUAZ6zkRmXNTnV9CAM8", featured:false, colleges:['ioe','patan','patan_prof','dav'] },
-  { id:19, name:"Supreme Pulchowk Boys Hostel",      addr:"Pulchowk Rd, Lalitpur",               area:"pulchowk",   type:"boys",  rating:4.2, reviews:27,  lat:27.6774579, lng:85.3152098, phone:"+977 980-6062278", snippet:"Best hostel near Pulchowk. Peaceful and big rooms with good food and facilities.", placeId:"ChIJXUo32fgZ6zkRNsgkBdfKAOM", featured:false, colleges:['ioe','patan','patan_prof','dav'] },
-  { id:20, name:"Girls Hostel Pulchowk",             addr:"Opposite Laxmi Bank, Pulchowk",       area:"pulchowk",   type:"girls", rating:4.0, reviews:68,  lat:27.6770864, lng:85.3156888, phone:"+977 984-8569757", snippet:"Clean, safe and well-managed hostel. Good environment for students near Pulchowk.", placeId:"ChIJ5_uExCAZ6zkRse5YNGv4otM", featured:false, colleges:['ioe','patan','patan_prof','dav'] },
-  { id:21, name:"Pulchowk Boys Hostel Pvt. Ltd.",    addr:"162 Kupondole Rd, Lalitpur",          area:"pulchowk",   type:"boys",  rating:4.9, reviews:24,  lat:27.6835444, lng:85.3157332, phone:"+977 980-3396550", snippet:"Well-furnished rooms, clean washrooms, very good food. A home-like safe environment.", placeId:"ChIJOTb_KwAZ6zkRVI4lmTikCgU", featured:false, colleges:['ioe','xavier','patan','patan_prof','dav'] },
-  { id:22, name:"A One Girl's Hostel",               addr:"Jwagal, Lalitpur",                    area:"pulchowk",   type:"girls", rating:4.8, reviews:79,  lat:27.6861247, lng:85.3213458, phone:"+977 981-3580104", snippet:"4 years during undergrad. Safe, healthy food, caring warden. Highly recommended.", placeId:"ChIJ48yWZbQZ6zkRppajEHf8lko", featured:false, colleges:['ioe','xavier','patan','patan_prof','dav'] }
-];
+let HOSTELS = [];
 
 
 
