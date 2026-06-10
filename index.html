@@ -201,7 +201,7 @@
 
 
     .hcard-hero { width: calc(100% + 2.4rem); margin: -1.1rem -1.2rem .9rem; height: 165px; object-fit: cover; border-radius: 13px 13px 0 0; display: block; cursor: pointer; }
-    .hcard-photos-btn { background: rgba(0,0,0,.5); color: #fff; border: none; border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit; position: absolute; bottom: 8px; right: 8px; }
+    .hcard-no-img { width: calc(100% + 2.4rem); margin: -1.1rem -1.2rem .9rem; height: 110px; border-radius: 13px 13px 0 0; background: linear-gradient(135deg, #e8f0ea 0%, #dce8de 100%); display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12px; color: #8aab8e; font-weight: 500; }
     .hcard-img-wrap { position: relative; }
     .gallery-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.9); z-index: 3000; align-items: center; justify-content: center; }
     .gallery-overlay.open { display: flex; }
@@ -320,23 +320,43 @@
     <div class="search-box" id="searchBoxCollege" style="display:none">
       <select id="collegeSelect" onchange="onCollegeSelect()">
         <option value="">— Select your college —</option>
-        <option value="ioe">IOE Pulchowk Campus</option>
-        <option value="prasadi">Prasadi Academy</option>
-        <option value="bluebird">Bluebird College</option>
-        <option value="united">United Academy</option>
-        <option value="shankerdev">Shanker Dev Campus</option>
-        <option value="trichandra">Tri-Chandra Campus</option>
-        <option value="ncommerce">Nepal Commerce Campus</option>
-        <option value="patan">Patan Multiple Campus</option>
-        <option value="xavier">St. Xavier's College</option>
-        <option value="balkumari">Balkumari College</option>
+        <optgroup label="── High School / +2 ──">
+          <option value="prasadi">Prasadi Academy</option>
+          <option value="bluebird">Bluebird College</option>
+          <option value="united">United Academy</option>
+          <option value="omega">Omega College</option>
+          <option value="moliss">MOLISS (Moonlight College)</option>
+          <option value="dav">DAV College NEB</option>
+          <option value="campion">Campion Academy</option>
+          <option value="xavier">St. Xavier's College</option>
+          <option value="trinity">Trinity International College</option>
+          <option value="kmc">KMC Lalitpur (Balkumari)</option>
+          <option value="vsniketan">VS Niketan</option>
+          <option value="xavierint">Xavier International College</option>
+        </optgroup>
+        <optgroup label="── College / Bachelor's ──">
+          <option value="ioe">IOE Pulchowk Campus</option>
+          <option value="shankerdev">Shanker Dev Campus</option>
+          <option value="trichandra">Tri-Chandra Campus</option>
+          <option value="ncommerce">Nepal Commerce Campus</option>
+          <option value="patan">Patan Multiple Campus</option>
+          <option value="patan_prof">Patan College (PCPS)</option>
+          <option value="balkumari">Balkumari College</option>
+          <option value="kmc">KMC Lalitpur</option>
+          <option value="padmakanya">Padmakanya Multiple Campus</option>
+          <option value="ratnarajya">Ratna Rajya Laxmi Campus</option>
+          <option value="herald">Herald College</option>
+          <option value="islington">Islington College</option>
+          <option value="ncit">NCIT College</option>
+          <option value="kist">KIST College</option>
+        </optgroup>
       </select>
       <button onclick="onCollegeSelect()">Find Hostels</button>
     </div>
     <div class="hero-stats">
       <div><div class="hs-num" id="statTotal">22</div><div class="hs-label">Hostels Listed</div></div>
       <div><div class="hs-num">4</div><div class="hs-label">Areas Covered</div></div>
-      <div><div class="hs-num">10</div><div class="hs-label">Colleges Mapped</div></div>
+      <div><div class="hs-num" id="statColleges">25</div><div class="hs-label">Schools &amp; Colleges</div></div>
     </div>
   </div>
 </section>
@@ -363,6 +383,10 @@
       <option value="kumaripati">Kumaripati</option>
       <option value="pulchowk">Pulchowk</option>
     </select>
+    <div class="filter-divider"></div>
+    <button class="chip level-chip active" onclick="setLevel('all',this)">All Levels</button>
+    <button class="chip level-chip" onclick="setLevel('highschool',this)">🏫 High School / +2</button>
+    <button class="chip level-chip" onclick="setLevel('college',this)">🎓 College / Bachelor</button>
   </div>
 </div>
 
@@ -446,41 +470,58 @@
 
 <script>
 const COLLEGES = {
-  ioe:       { name:'IOE Pulchowk Campus',    lat:27.6813, lng:85.3199 },
-  prasadi:   { name:'Prasadi Academy',         lat:27.6690, lng:85.3190 },
-  bluebird:  { name:'Bluebird College',        lat:27.6701, lng:85.3196 },
-  united:    { name:'United Academy',          lat:27.6680, lng:85.3195 },
-  shankerdev:{ name:'Shanker Dev Campus',      lat:27.7055, lng:85.3241 },
-  trichandra:{ name:'Tri-Chandra Campus',      lat:27.7090, lng:85.3143 },
-  ncommerce: { name:'Nepal Commerce Campus',   lat:27.7064, lng:85.3302 },
-  patan:     { name:'Patan Multiple Campus',   lat:27.6750, lng:85.3176 },
-  xavier:    { name:"St. Xavier's College",    lat:27.6960, lng:85.3171 },
-  balkumari: { name:'Balkumari College',       lat:27.6920, lng:85.3380 }
+  /* ── HIGH SCHOOL / +2 ── */
+  prasadi:   { name:'Prasadi Academy',              level:'highschool', lat:27.6690, lng:85.3190 },
+  bluebird:  { name:'Bluebird College',             level:'highschool', lat:27.6701, lng:85.3196 },
+  united:    { name:'United Academy',               level:'highschool', lat:27.6680, lng:85.3195 },
+  omega:     { name:'Omega College',                level:'highschool', lat:27.6718, lng:85.3188 },
+  moliss:    { name:'MOLISS (Moonlight College)',   level:'highschool', lat:27.6714, lng:85.3184 },
+  xavier:    { name:"St. Xavier's College",         level:'highschool', lat:27.6960, lng:85.3171 },
+  dav:       { name:'DAV College NEB',              level:'highschool', lat:27.6768, lng:85.3118 },
+  campion:   { name:'Campion Academy',              level:'highschool', lat:27.6640, lng:85.3175 },
+  trinity:   { name:'Trinity International College',level:'highschool', lat:27.7115, lng:85.3276 },
+  kmc:       { name:'KMC Lalitpur (Balkumari)',     level:'highschool', lat:27.6913, lng:85.3417 },
+  vsniketan: { name:'VS Niketan',                   level:'highschool', lat:27.7055, lng:85.3285 },
+  xavierint: { name:'Xavier International College', level:'highschool', lat:27.7185, lng:85.3225 },
+  /* ── COLLEGE / BACHELOR'S ── */
+  ioe:       { name:'IOE Pulchowk Campus',          level:'college',    lat:27.6813, lng:85.3199 },
+  shankerdev:{ name:'Shanker Dev Campus',           level:'college',    lat:27.7055, lng:85.3241 },
+  trichandra:{ name:'Tri-Chandra Campus',           level:'college',    lat:27.7090, lng:85.3143 },
+  ncommerce: { name:'Nepal Commerce Campus',        level:'college',    lat:27.7064, lng:85.3302 },
+  patan:     { name:'Patan Multiple Campus',        level:'college',    lat:27.6750, lng:85.3176 },
+  balkumari: { name:'Balkumari College',            level:'college',    lat:27.6920, lng:85.3380 },
+  padmakanya:{ name:'Padmakanya Multiple Campus',  level:'college',    lat:27.7058, lng:85.3109 },
+  ratnarajya:{ name:'Ratna Rajya Laxmi Campus',    level:'college',    lat:27.7040, lng:85.3218 },
+  herald:    { name:'Herald College',               level:'college',    lat:27.7153, lng:85.3295 },
+  islington: { name:'Islington College',            level:'college',    lat:27.7010, lng:85.3302 },
+  ncit:      { name:'NCIT College',                 level:'college',    lat:27.6910, lng:85.3408 },
+  kist:      { name:'KIST College',                 level:'college',    lat:27.7120, lng:85.3278 },
+  patan_prof:{ name:'Patan College (PCPS)',         level:'college',    lat:27.6730, lng:85.3160 },
 };
 
 let HOSTELS = [
-  { id:1,  name:"New Heaven Boys Hostel",           addr:"31 Devkota Sadak, Koteshwor",         area:"koteshwor",  type:"boys",  rating:4.8, reviews:217, lat:27.7010966, lng:85.3400163, phone:"+977 976-7300495", snippet:"Per-floor WiFi, gym, library and garden. Supportive staff — truly feels like home.", placeId:"ChIJV2LiYpsZ6zkRq2KU_9fLv5w", featured:false, colleges:['balkumari','ncommerce'] },
-  { id:2,  name:"Blissful Girls Hostel",             addr:"Rudra Mati Marg, Koteshwor",          area:"koteshwor",  type:"girls", rating:4.7, reviews:47,  lat:27.7001951, lng:85.3333734, phone:"+977 984-1310355", snippet:"Clean and quiet. Perfect environment for CEE and board exam preparation.", placeId:"ChIJbQCN1ZcZ6zkRZ1auDlxlt5Y", featured:true,  colleges:['balkumari','shankerdev'] },
-  { id:3,  name:"Central Valley Hostel",             addr:"Baneshwor, Kathmandu",                area:"baneshwor",  type:"boys",  rating:4.6, reviews:49,  lat:27.7005718, lng:85.3304246, phone:"+977 976-5414444", snippet:"Best student hostel at an affordable price. Delicious food, staff feel like family.", placeId:"ChIJ3ToaklYZ6zkRTtcG2gtH-Bk", featured:true,  colleges:['shankerdev','ncommerce','xavier'] },
-  { id:4,  name:"SRIJA Girls Hostel",                addr:"Tank Prasad Ghumti Sadak, Baneshwor", area:"baneshwor",  type:"girls", rating:4.5, reviews:31,  lat:27.6998548, lng:85.3271409, phone:"+977 981-0315120", snippet:"Safe and welcoming. The warden cares for every girl like a parent. Truly a second home.", placeId:"ChIJsxZfCQAZ6zkRMQ35gwEeWtY", featured:true,  colleges:['shankerdev','xavier','ncommerce'] },
-  { id:5,  name:"Mount Everest Boys & Girls Hostel", addr:"Kumari Marg, Baneshwor",              area:"baneshwor",  type:"both",  rating:4.3, reviews:185, lat:27.7073067, lng:85.3246228, phone:"+977 985-1169318", snippet:"All amenities at a reasonable cost. Good food, WiFi, and a great study atmosphere.", placeId:"ChIJ71Y6m1kZ6zkRI3rduexcDQk", featured:false, colleges:['shankerdev','trichandra','ncommerce'] },
-  { id:6,  name:"Narayan Boys Hostel",               addr:"New Baneshwor, Kathmandu",            area:"baneshwor",  type:"boys",  rating:4.4, reviews:17,  lat:27.7021265, lng:85.3318846, phone:"+977 984-5041458", snippet:"Best food and peaceful environment. Highly recommended for students.", placeId:"ChIJqw95ji0Z6zkRhEu192VGW3E", featured:false, colleges:['shankerdev','ncommerce'] },
-  { id:7,  name:"The Best Girls Hostel",             addr:"Setopull, Baneshwor",                 area:"baneshwor",  type:"girls", rating:4.1, reviews:81,  lat:27.7016434, lng:85.3350632, phone:"+977 986-0922832", snippet:"Clean rooms with study tables and book racks. 24/7 hot and cold drinking water.", placeId:"ChIJISSCNfIZ6zkRG6uYYgvZ_dY", featured:false, colleges:['shankerdev','ncommerce'] },
-  { id:8,  name:"The Best Boys Hostel",              addr:"Seto Pul, Baneshwor",                 area:"baneshwor",  type:"boys",  rating:4.0, reviews:90,  lat:27.7013969, lng:85.3350903, phone:"+977 986-0922832", snippet:"Peaceful environment great for exam prep. Decent food and comfortable rooms.", placeId:"ChIJt_o6xvYZ6zkRZdPkVBy8I1o", featured:false, colleges:['shankerdev','ncommerce'] },
-  { id:9,  name:"Rauniyar Boys Hostel",              addr:"Balkumari, Lalitpur",                 area:"koteshwor",  type:"boys",  rating:4.5, reviews:172, lat:27.6724090, lng:85.3444671, phone:"+977 981-5252854", snippet:"Best in Balkumari. Peaceful rooms, great food, sports activities, easy highway access.", placeId:"ChIJ68-LB8cZ6zkRDIuJmtWz5tI", featured:false, colleges:['balkumari'] },
-  { id:10, name:"Destination Girls Hostel",          addr:"Balkumari, Lalitpur",                 area:"koteshwor",  type:"girls", rating:5.0, reviews:9,   lat:27.6935989, lng:85.3442233, phone:null,               snippet:"Safe, clean and peaceful. Highly recommended for students and working ladies.", placeId:"ChIJ8U0WcOMZ6zkRPkYlI33Q2ps", featured:false, colleges:['balkumari'] },
-  { id:11, name:"Padma Girls Hostel",                addr:"Manbhawan Marg, Kumaripati",          area:"kumaripati", type:"girls", rating:4.8, reviews:21,  lat:27.6712855, lng:85.3164754, phone:"+977 985-1236346", snippet:"Best hostel in town. Good food, homely environment, and prime location near colleges.", placeId:"ChIJ6XX8ZtQZ6zkRY4sUxBqvn_4", featured:false, colleges:['prasadi','bluebird','united','patan'] },
-  { id:12, name:"Lifeline Boys Hostel",              addr:"Near Bluebird & Prasadi, Kumaripati", area:"kumaripati", type:"boys",  rating:5.0, reviews:15,  lat:27.6700918, lng:85.3197443, phone:"+977 985-1121345", snippet:"Basketball, badminton and table tennis. Delicious home-cooked food. Prime location.", placeId:"ChIJXzXiCQAZ6zkRlMxTU3UelPE", featured:false, colleges:['prasadi','bluebird','united','patan'] },
-  { id:13, name:"City Boy's Hostel",                 addr:"Kumaripati, Dakshinkali St",          area:"kumaripati", type:"boys",  rating:4.6, reviews:14,  lat:27.6680189, lng:85.3186642, phone:"+977 984-1029219", snippet:"Clean rooms, friendly staff, good food, and reliable WiFi. Feels like home.", placeId:"ChIJGa8qeQAZ6zkRZWCYmzZP5O0", featured:false, colleges:['prasadi','bluebird','united'] },
-  { id:14, name:"Mid Town Boys Hostel",              addr:"Shanti Marg, Kumaripati",             area:"kumaripati", type:"boys",  rating:4.1, reviews:79,  lat:27.6654113, lng:85.3157539, phone:"+977 985-1167133", snippet:"Great location near Prasadi and United Academy. Clean rooms with a family atmosphere.", placeId:"ChIJg35uZwAZ6zkR7ndXGfu5WCo", featured:false, colleges:['prasadi','bluebird','united'] },
-  { id:15, name:"Patan Girls Hostel",                addr:"Mahalaxmisthan Rd, Kumaripati",       area:"kumaripati", type:"girls", rating:4.4, reviews:28,  lat:27.6692432, lng:85.3190293, phone:"+977 986-9035251", snippet:"Safe with CCTV, fast WiFi, good food, and a clean peaceful atmosphere.", placeId:"ChIJqakz7LYZ6zkRrezkRL7hsYo", featured:false, colleges:['prasadi','bluebird','patan'] },
-  { id:16, name:"EZE Girls Hostel",                  addr:"Kumaripati, Lalitpur",                area:"kumaripati", type:"girls", rating:3.8, reviews:10,  lat:27.6705743, lng:85.3216937, phone:"+977 980-1973120", snippet:"Good and friendly environment. Convenient location near Kumaripati colleges.", placeId:"ChIJs-rc6kgZ6zkRB5cpwnhgRfA", featured:false, colleges:['prasadi','bluebird'] },
-  { id:17, name:"Mountain Boys Hostel",              addr:"Kulkhya Marg, Kumaripati",            area:"kumaripati", type:"boys",  rating:4.3, reviews:27,  lat:27.6716958, lng:85.3198514, phone:"+977 984-9154695", snippet:"Good and peaceful environment for students. Well-managed facilities and nice food.", placeId:"ChIJR74eqKsZ6zkRnffuCqRGnM0", featured:false, colleges:['prasadi','bluebird','patan'] },
-  { id:18, name:"Jawalakhel Boys Hostel",            addr:"Pulchowk - Dhobighat Rd, Lalitpur",   area:"pulchowk",   type:"boys",  rating:5.0, reviews:55,  lat:27.6756398, lng:85.3077023, phone:"+977 985-1122078", snippet:"Stayed 2 years with no complaints. Great food, clean rooms, excellent laundry service.", placeId:"ChIJGx9lxUAZ6zkRmXNTnV9CAM8", featured:false, colleges:['ioe','patan'] },
-  { id:19, name:"Supreme Pulchowk Boys Hostel",      addr:"Pulchowk Rd, Lalitpur",               area:"pulchowk",   type:"boys",  rating:4.2, reviews:27,  lat:27.6774579, lng:85.3152098, phone:"+977 980-6062278", snippet:"Best hostel near Pulchowk. Peaceful and big rooms with good food and facilities.", placeId:"ChIJXUo32fgZ6zkRNsgkBdfKAOM", featured:false, colleges:['ioe','patan'] },
-  { id:20, name:"Girls Hostel Pulchowk",             addr:"Opposite Laxmi Bank, Pulchowk",       area:"pulchowk",   type:"girls", rating:4.0, reviews:68,  lat:27.6770864, lng:85.3156888, phone:"+977 984-8569757", snippet:"Clean, safe and well-managed hostel. Good environment for students near Pulchowk.", placeId:"ChIJ5_uExCAZ6zkRse5YNGv4otM", featured:false, colleges:['ioe','patan'] },
-  { id:21, name:"Pulchowk Boys Hostel Pvt. Ltd.",    addr:"162 Kupondole Rd, Lalitpur",          area:"pulchowk",   type:"boys",  rating:4.9, reviews:24,  lat:27.6835444, lng:85.3157332, phone:"+977 980-3396550", snippet:"Well-furnished rooms, clean washrooms, very good food. A home-like safe environment.", placeId:"ChIJOTb_KwAZ6zkRVI4lmTikCgU", featured:false, colleges:['ioe','xavier','patan'] },
-  { id:22, name:"A One Girl's Hostel",               addr:"Jwagal, Lalitpur",                    area:"pulchowk",   type:"girls", rating:4.8, reviews:79,  lat:27.6861247, lng:85.3213458, phone:"+977 981-3580104", snippet:"4 years during undergrad. Safe, healthy food, caring warden. Highly recommended.", placeId:"ChIJ48yWZbQZ6zkRppajEHf8lko", featured:false, colleges:['ioe','xavier','patan'] }
+  { id:1,  name:"New Heaven Boys Hostel",           addr:"31 Devkota Sadak, Koteshwor",         area:"koteshwor",  type:"boys",  rating:4.8, reviews:217, lat:27.7010966, lng:85.3400163, phone:"+977 976-7300495", snippet:"Per-floor WiFi, gym, library and garden. Supportive staff — truly feels like home.", placeId:"ChIJV2LiYpsZ6zkRq2KU_9fLv5w", featured:false, colleges:['balkumari','kmc','ncit','ncommerce'] },
+  { id:2,  name:"Blissful Girls Hostel",             addr:"Rudra Mati Marg, Koteshwor",          area:"koteshwor",  type:"girls", rating:4.7, reviews:47,  lat:27.7001951, lng:85.3333734, phone:"+977 984-1310355", snippet:"Clean and quiet. Perfect environment for CEE and board exam preparation.", placeId:"ChIJbQCN1ZcZ6zkRZ1auDlxlt5Y", featured:true,  colleges:['balkumari','kmc','ncit','shankerdev'] },
+  { id:3,  name:"Central Valley Hostel",             addr:"Baneshwor, Kathmandu",                area:"baneshwor",  type:"boys",  rating:4.6, reviews:49,  lat:27.7005718, lng:85.3304246, phone:"+977 976-5414444", snippet:"Best student hostel at an affordable price. Delicious food, staff feel like family.", placeId:"ChIJ3ToaklYZ6zkRTtcG2gtH-Bk", featured:true,  colleges:['shankerdev','ncommerce','xavier','ratnarajya','islington','vsniketan'] },
+  { id:4,  name:"SRIJA Girls Hostel",                addr:"Tank Prasad Ghumti Sadak, Baneshwor", area:"baneshwor",  type:"girls", rating:4.5, reviews:31,  lat:27.6998548, lng:85.3271409, phone:"+977 981-0315120", snippet:"Safe and welcoming. The warden cares for every girl like a parent. Truly a second home.", placeId:"ChIJsxZfCQAZ6zkRMQ35gwEeWtY", featured:true,  colleges:['shankerdev','ncommerce','xavier','ratnarajya','islington'] },
+  { id:5,  name:"Mount Everest Boys & Girls Hostel", addr:"Kumari Marg, Baneshwor",              area:"baneshwor",  type:"both",  rating:4.3, reviews:185, lat:27.7073067, lng:85.3246228, phone:"+977 985-1169318", snippet:"All amenities at a reasonable cost. Good food, WiFi, and a great study atmosphere.", placeId:"ChIJ71Y6m1kZ6zkRI3rduexcDQk", featured:false, colleges:['shankerdev','trichandra','ncommerce','ratnarajya','herald','trinity'] },
+  { id:6,  name:"Narayan Boys Hostel",               addr:"New Baneshwor, Kathmandu",            area:"baneshwor",  type:"boys",  rating:4.4, reviews:17,  lat:27.7021265, lng:85.3318846, phone:"+977 984-5041458", snippet:"Best food and peaceful environment. Highly recommended for students.", placeId:"ChIJqw95ji0Z6zkRhEu192VGW3E", featured:false, colleges:['shankerdev','ncommerce','ratnarajya','islington','vsniketan'] },
+  { id:7,  name:"The Best Girls Hostel",             addr:"Setopull, Baneshwor",                 area:"baneshwor",  type:"girls", rating:4.1, reviews:81,  lat:27.7016434, lng:85.3350632, phone:"+977 986-0922832", snippet:"Clean rooms with study tables and book racks. 24/7 hot and cold drinking water.", placeId:"ChIJISSCNfIZ6zkRG6uYYgvZ_dY", featured:false, colleges:['shankerdev','ncommerce','ratnarajya','islington','vsniketan'] },
+  { id:8,  name:"The Best Boys Hostel",              addr:"Seto Pul, Baneshwor",                 area:"baneshwor",  type:"boys",  rating:4.0, reviews:90,  lat:27.7013969, lng:85.3350903, phone:"+977 986-0922832", snippet:"Peaceful environment great for exam prep. Decent food and comfortable rooms.", placeId:"ChIJt_o6xvYZ6zkRZdPkVBy8I1o", featured:false, colleges:['shankerdev','ncommerce','ratnarajya','islington','vsniketan'] },
+  { id:9,  name:"Rauniyar Boys Hostel",              addr:"Balkumari, Lalitpur",                 area:"koteshwor",  type:"boys",  rating:4.5, reviews:172, lat:27.6724090, lng:85.3444671, phone:"+977 981-5252854", snippet:"Best in Balkumari. Peaceful rooms, great food, sports activities, easy highway access.", placeId:"ChIJ68-LB8cZ6zkRDIuJmtWz5tI", featured:false, colleges:['balkumari','kmc','ncit'] },
+  { id:10, name:"Destination Girls Hostel",          addr:"Balkumari, Lalitpur",                 area:"koteshwor",  type:"girls", rating:5.0, reviews:9,   lat:27.6935989, lng:85.3442233, phone:null,               snippet:"Safe, clean and peaceful. Highly recommended for students and working ladies.", placeId:"ChIJ8U0WcOMZ6zkRPkYlI33Q2ps", featured:false, colleges:['balkumari','kmc','ncit'] },
+  { id:11, name:"Padma Girls Hostel",                addr:"Manbhawan Marg, Kumaripati",          area:"kumaripati", type:"girls", rating:4.8, reviews:21,  lat:27.6712855, lng:85.3164754, phone:"+977 985-1236346", snippet:"Best hostel in town. Good food, homely environment, and prime location near colleges.", placeId:"ChIJ6XX8ZtQZ6zkRY4sUxBqvn_4", featured:false, colleges:['prasadi','bluebird','united','omega','moliss','kist','patan_prof','patan'] },
+  { id:12, name:"Lifeline Boys Hostel",              addr:"Near Bluebird & Prasadi, Kumaripati", area:"kumaripati", type:"boys",  rating:5.0, reviews:15,  lat:27.6700918, lng:85.3197443, phone:"+977 985-1121345", snippet:"Basketball, badminton and table tennis. Delicious home-cooked food. Prime location.", placeId:"ChIJXzXiCQAZ6zkRlMxTU3UelPE", featured:false, colleges:['prasadi','bluebird','united','omega','moliss','kist','patan_prof','patan'] },
+  { id:13, name:"City Boy's Hostel",                 addr:"Kumaripati, Dakshinkali St",          area:"kumaripati", type:"boys",  rating:4.6, reviews:14,  lat:27.6680189, lng:85.3186642, phone:"+977 984-1029219", snippet:"Clean rooms, friendly staff, good food, and reliable WiFi. Feels like home.", placeId:"ChIJGa8qeQAZ6zkRZWCYmzZP5O0", featured:false, colleges:['prasadi','bluebird','united','omega','moliss','campion'] },
+  { id:14, name:"Mid Town Boys Hostel",              addr:"Shanti Marg, Kumaripati",             area:"kumaripati", type:"boys",  rating:4.1, reviews:79,  lat:27.6654113, lng:85.3157539, phone:"+977 985-1167133", snippet:"Great location near Prasadi and United Academy. Clean rooms with a family atmosphere.", placeId:"ChIJg35uZwAZ6zkR7ndXGfu5WCo", featured:false, colleges:['prasadi','bluebird','united','omega','moliss','campion'] },
+  { id:15, name:"Patan Girls Hostel",                addr:"Mahalaxmisthan Rd, Kumaripati",       area:"kumaripati", type:"girls", rating:4.4, reviews:28,  lat:27.6692432, lng:85.3190293, phone:"+977 986-9035251", snippet:"Safe with CCTV, fast WiFi, good food, and a clean peaceful atmosphere.", placeId:"ChIJqakz7LYZ6zkRrezkRL7hsYo", featured:false, colleges:['prasadi','bluebird','united','omega','moliss','patan_prof','patan'] },
+  { id:16, name:"EZE Girls Hostel",                  addr:"Kumaripati, Lalitpur",                area:"kumaripati", type:"girls", rating:3.8, reviews:10,  lat:27.6705743, lng:85.3216937, phone:"+977 980-1973120", snippet:"Good and friendly environment. Convenient location near Kumaripati colleges.", placeId:"ChIJs-rc6kgZ6zkRB5cpwnhgRfA", featured:false, colleges:['prasadi','bluebird','united','omega','moliss'] },
+  { id:17, name:"Mountain Boys Hostel",              addr:"Kulkhya Marg, Kumaripati",            area:"kumaripati", type:"boys",  rating:4.3, reviews:27,  lat:27.6716958, lng:85.3198514, phone:"+977 984-9154695", snippet:"Good and peaceful environment for students. Well-managed facilities and nice food.", placeId:"ChIJR74eqKsZ6zkRnffuCqRGnM0", featured:false, colleges:['prasadi','bluebird','united','omega','moliss','patan_prof','patan'] },
+  { id:18, name:"Jawalakhel Boys Hostel",            addr:"Pulchowk - Dhobighat Rd, Lalitpur",   area:"pulchowk",   type:"boys",  rating:5.0, reviews:55,  lat:27.6756398, lng:85.3077023, phone:"+977 985-1122078", snippet:"Stayed 2 years with no complaints. Great food, clean rooms, excellent laundry service.", placeId:"ChIJGx9lxUAZ6zkRmXNTnV9CAM8", featured:false, colleges:['ioe','patan','patan_prof','dav'] },
+  { id:19, name:"Supreme Pulchowk Boys Hostel",      addr:"Pulchowk Rd, Lalitpur",               area:"pulchowk",   type:"boys",  rating:4.2, reviews:27,  lat:27.6774579, lng:85.3152098, phone:"+977 980-6062278", snippet:"Best hostel near Pulchowk. Peaceful and big rooms with good food and facilities.", placeId:"ChIJXUo32fgZ6zkRNsgkBdfKAOM", featured:false, colleges:['ioe','patan','patan_prof','dav'] },
+  { id:20, name:"Girls Hostel Pulchowk",             addr:"Opposite Laxmi Bank, Pulchowk",       area:"pulchowk",   type:"girls", rating:4.0, reviews:68,  lat:27.6770864, lng:85.3156888, phone:"+977 984-8569757", snippet:"Clean, safe and well-managed hostel. Good environment for students near Pulchowk.", placeId:"ChIJ5_uExCAZ6zkRse5YNGv4otM", featured:false, colleges:['ioe','patan','patan_prof','dav'] },
+  { id:21, name:"Pulchowk Boys Hostel Pvt. Ltd.",    addr:"162 Kupondole Rd, Lalitpur",          area:"pulchowk",   type:"boys",  rating:4.9, reviews:24,  lat:27.6835444, lng:85.3157332, phone:"+977 980-3396550", snippet:"Well-furnished rooms, clean washrooms, very good food. A home-like safe environment.", placeId:"ChIJOTb_KwAZ6zkRVI4lmTikCgU", featured:false, colleges:['ioe','xavier','patan','patan_prof','dav'] },
+  { id:22, name:"A One Girl's Hostel",               addr:"Jwagal, Lalitpur",                    area:"pulchowk",   type:"girls", rating:4.8, reviews:79,  lat:27.6861247, lng:85.3213458, phone:"+977 981-3580104", snippet:"4 years during undergrad. Safe, healthy food, caring warden. Highly recommended.", placeId:"ChIJ48yWZbQZ6zkRppajEHf8lko", featured:false, colleges:['ioe','xavier','patan','patan_prof','dav'] }
 ];
 
 
@@ -495,7 +536,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 /* ════════════════════════════════════ */
 
 /* ── STATE ── */
-let activeType = 'all', activeCollege = null, currentView = 'list', searchMode = 'location';
+let activeType = 'all', activeLevel = 'all', activeCollege = null, currentView = 'list', searchMode = 'location';
 let gmap, markers = {}, iw, collegeMk, enqHostel = null;
 
 /* ── HELPERS ── */
@@ -545,6 +586,13 @@ function placeCollegeMk(id) {
 }
 
 /* ── FILTER ── */
+function setLevel(val, btn) {
+  activeLevel = val;
+  document.querySelectorAll('.level-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterAndRender();
+}
+
 function setType(val, btn) {
   activeType = val;
   document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
@@ -562,6 +610,10 @@ function getVisible() {
     if (activeType==='top' && h.rating < 4.5) return false;
     else if (activeType!=='all' && activeType!=='top' && h.type!==activeType) return false;
     if (area && h.area !== area) return false;
+    if (activeLevel !== 'all') {
+      const hasLevel = (h.colleges||[]).some(cid => COLLEGES[cid]?.level === activeLevel);
+      if (!hasLevel) return false;
+    }
     return true;
   }).sort((a,b) => (b.featured-a.featured) || (b.rating-a.rating));
 }
@@ -591,11 +643,12 @@ function filterAndRender() {
 
   grid.innerHTML = vis.map(h => `
     <div class="hcard${h.featured?' featured':''}" onclick="openCard(${h.id})">
-      ${h.hero_image_url ? `
-        <div class="hcard-img-wrap">
-          <img src="${h.hero_image_url}" class="hcard-hero" alt="${h.name}" onclick="event.stopPropagation();openGallery(${h.id})">
-          ${(h.images && h.images.length > 1) ? `<button class="hcard-photos-btn" onclick="event.stopPropagation();openGallery(${h.id})">📷 ${h.images.length} photos</button>` : ''}
-        </div>` : ''}
+      ${h.hero_image_url
+        ? `<div class="hcard-img-wrap">
+            <img src="${h.hero_image_url}" class="hcard-hero" alt="${h.name}" onclick="event.stopPropagation();openGallery(${h.id})">
+            ${(h.images && h.images.length > 1) ? `<button class="btn btn-call" style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.5);color:#fff;border:none;font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openGallery(${h.id})">📷 ${h.images.length} photos</button>` : ''}
+          </div>`
+        : `<div class="hcard-no-img">📷 No photos yet</div>`}
       <div class="hc-top">
         <div class="hc-name-wrap">
           <span class="hc-name">${h.name}</span>
@@ -731,7 +784,7 @@ async function init() {
         .eq('active', true)
         .order('featured', { ascending: false })
         .order('rating', { ascending: false });
-      if (!error && data?.length) HOSTELS = data;
+      if (!error) HOSTELS = data || [];
     } catch(e) { console.log('Supabase not configured, using built-in data'); }
   }
   filterAndRender();

@@ -243,18 +243,56 @@
       </div>
     </div>
     <div class="sec-label">Nearby Colleges</div>
+    <p style="font-size:11px;color:#aaa;margin-bottom:.5rem">High School / +2</p>
     <div class="college-chips" id="fColleges">
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="ioe">IOE Pulchowk</label>
       <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="prasadi">Prasadi Academy</label>
       <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="bluebird">Bluebird College</label>
       <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="united">United Academy</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="omega">Omega College</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="moliss">MOLISS</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="dav">DAV College NEB</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="campion">Campion Academy</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="xavier">St. Xavier's College</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="trinity">Trinity Int'l College</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="kmc">KMC Lalitpur</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="vsniketan">VS Niketan</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="xavierint">Xavier Int'l College</label>
+    </div>
+    <p style="font-size:11px;color:#aaa;margin:.75rem 0 .5rem">College / Bachelor's</p>
+    <div class="college-chips">
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="ioe">IOE Pulchowk</label>
       <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="shankerdev">Shanker Dev Campus</label>
       <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="trichandra">Tri-Chandra Campus</label>
       <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="ncommerce">Nepal Commerce Campus</label>
       <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="patan">Patan Multiple Campus</label>
-      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="xavier">St. Xavier's College</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="patan_prof">Patan College (PCPS)</label>
       <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="balkumari">Balkumari College</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="padmakanya">Padmakanya Campus</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="ratnarajya">Ratna Rajya Campus</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="herald">Herald College</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="islington">Islington College</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="ncit">NCIT College</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="kist">KIST College</label>
     </div>
+
+    <!-- PHOTOS SECTION — only shown when editing an existing hostel -->
+    <div id="formPhotosSection" style="display:none">
+      <div class="sec-label">Photos</div>
+      <label class="upload-zone" for="formFileInput">
+        <div class="uz-icon">📷</div>
+        <p>Click to upload photos</p>
+        <small>JPG, PNG, WEBP · Max 5MB each · Multiple photos allowed</small>
+      </label>
+      <input type="file" id="formFileInput" accept="image/*" multiple style="display:none" onchange="formUploadImages(event)">
+      <p class="up-prog" id="formUpProg">Uploading photos...</p>
+      <div class="img-grid" id="formImgGrid"></div>
+    </div>
+
+    <!-- NEW HOSTEL NOTICE -->
+    <div id="formPhotosNotice" style="display:none;margin-top:1rem;background:#f7f8f5;border:1px solid #e8e4d8;border-radius:9px;padding:.85rem 1rem;font-size:12px;color:#888;">
+      💡 Save the hostel first, then re-open it to upload photos.
+    </div>
+
     <div class="modal-foot">
       <button class="btn-cancel" onclick="closeForm()">Cancel</button>
       <button class="btn-save" id="btnSave" onclick="saveHostel()">Save Hostel</button>
@@ -442,12 +480,17 @@ function openForm(id) {
   document.getElementById('fRating').value  = h?.rating || '';
   document.getElementById('fReviews').value = h?.reviews || '';
   document.getElementById('fSnippet').value = h?.snippet || '';
-  document.querySelectorAll('#fColleges .c-chip').forEach(el => {
+  document.querySelectorAll('.c-chip').forEach(el => {
     const v = el.querySelector('input').value;
     const on = h?.colleges?.includes(v) || false;
     el.classList.toggle('on', on);
     el.querySelector('input').checked = on;
   });
+  // Show photos section only when editing an existing hostel
+  const isEdit = !!h;
+  document.getElementById('formPhotosSection').style.display = isEdit ? 'block' : 'none';
+  document.getElementById('formPhotosNotice').style.display  = isEdit ? 'none'  : 'block';
+  if (isEdit) renderFormImgGrid(h);
   document.getElementById('formOverlay').classList.add('open');
 }
 
@@ -470,7 +513,7 @@ async function saveHostel() {
     toast('Please fill in all required fields', true); return;
   }
   const coords = extractCoords(mapsLink);
-  const colleges = [...document.querySelectorAll('#fColleges input:checked')].map(i => i.value);
+  const colleges = [...document.querySelectorAll('.c-chip input:checked')].map(i => i.value);
   const data = {
     name, type, addr, area, colleges, active: true,
     maps_link: mapsLink,
@@ -582,6 +625,75 @@ async function removeImage(url) {
     renderImgGrid(); renderTable();
   }
   toast('Photo deleted');
+}
+
+/* ── INLINE FORM PHOTOS ── */
+function renderFormImgGrid(h) {
+  const imgs = h?.images || [];
+  const hero = h?.hero_image_url;
+  const grid = document.getElementById('formImgGrid');
+  if (!imgs.length) {
+    grid.innerHTML = '<p class="no-photos">No photos yet — upload some above.</p>';
+    return;
+  }
+  grid.innerHTML = imgs.map(url => `
+    <div class="img-cell${url === hero ? ' is-hero' : ''}">
+      <img src="${url}" alt="photo">
+      <div class="img-cell-btns">
+        <button class="ic-btn ic-star${url === hero ? ' on' : ''}" onclick="formSetHero('${url}')" title="Set as hero">★</button>
+        <button class="ic-btn ic-del" onclick="formDelImg('${url}')" title="Delete">✕</button>
+      </div>
+      ${url === hero ? '<span class="hero-tag">Hero</span>' : ''}
+    </div>`).join('');
+}
+
+async function formUploadImages(e) {
+  const id = document.getElementById('fId').value;
+  if (!id) return;
+  const h = hostels.find(x => x.id == id);
+  if (!h) return;
+  const files = [...e.target.files];
+  const prog = document.getElementById('formUpProg');
+  prog.style.display = 'block';
+  const newUrls = [];
+  for (const file of files) {
+    if (file.size > 5 * 1024 * 1024) { toast(`${file.name} exceeds 5MB`, true); continue; }
+    const ext  = file.name.split('.').pop();
+    const path = `${id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+    const { error: upErr } = await sb.storage.from('hostel-images').upload(path, file);
+    if (upErr) { toast('Upload failed: ' + upErr.message, true); continue; }
+    const { data: { publicUrl } } = sb.storage.from('hostel-images').getPublicUrl(path);
+    newUrls.push(publicUrl);
+  }
+  prog.style.display = 'none';
+  e.target.value = '';
+  if (!newUrls.length) return;
+  const updImgs = [...(h.images || []), ...newUrls];
+  const updHero = h.hero_image_url || newUrls[0];
+  const { error } = await sb.from('hostels').update({ images: updImgs, hero_image_url: updHero }).eq('id', id);
+  if (!error) { h.images = updImgs; h.hero_image_url = updHero; renderFormImgGrid(h); renderTable(); }
+  toast(`✓ ${newUrls.length} photo(s) uploaded`);
+}
+
+async function formSetHero(url) {
+  const id = document.getElementById('fId').value;
+  const h  = hostels.find(x => x.id == id);
+  if (!h) return;
+  const { error } = await sb.from('hostels').update({ hero_image_url: url }).eq('id', id);
+  if (!error) { h.hero_image_url = url; renderFormImgGrid(h); renderTable(); toast('✓ Hero image updated'); }
+}
+
+async function formDelImg(url) {
+  if (!confirm('Delete this photo?')) return;
+  const id = document.getElementById('fId').value;
+  const h  = hostels.find(x => x.id == id);
+  if (!h) return;
+  const path = url.split('/hostel-images/')[1];
+  if (path) await sb.storage.from('hostel-images').remove([path]);
+  const updImgs = (h.images || []).filter(u => u !== url);
+  const updHero = h.hero_image_url === url ? (updImgs[0] || null) : h.hero_image_url;
+  const { error } = await sb.from('hostels').update({ images: updImgs, hero_image_url: updHero }).eq('id', id);
+  if (!error) { h.images = updImgs; h.hero_image_url = updHero; renderFormImgGrid(h); renderTable(); toast('Photo deleted'); }
 }
 
 /* ── TOAST ── */
