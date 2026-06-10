@@ -528,7 +528,7 @@ let gmap, markers = {}, iw, collegeMk, enqHostel = null;
 function tc(t) { return {boys:'tag-boys',girls:'tag-girls',both:'tag-both'}[t]||'tag-boys'; }
 function tl(t) { return {boys:'Boys',girls:'Girls',both:'Boys & Girls'}[t]||t; }
 function stars(r) { const f=Math.floor(r),h=r%1>=.5?1:0; return '★'.repeat(f)+(h?'½':'')+'☆'.repeat(5-f-h); }
-function mapsURL(h) { return h.maps_link || `https://www.google.com/maps/search/?api=1&query=${h.lat},${h.lng}${h.place_id?'&query_place_id='+h.place_id:''}`; }
+function mapsURL(h) { return h.maps_link || (h.lat && h.lng ? `https://www.google.com/maps/search/?api=1&query=${h.lat},${h.lng}` : '#'); }
 
 /* ── SEARCH TABS ── */
 function switchSearchTab(mode) {

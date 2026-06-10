@@ -7,6 +7,7 @@
   <meta name="robots" content="noindex, nofollow">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAXEfKj0L2NAmOIp3aVSXqgGzXyINdTkkk&libraries=places&callback=onMapsReady" async defer></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f7f8f5; color: #1a1a1a; font-size: 14px; }
@@ -240,7 +241,6 @@
         </select>
       </div>
       <div class="fg"><label>Phone</label><input type="tel" id="fPhone" placeholder="+977 98XXXXXXXX"></div>
-      <div class="fg"><label>Google Place ID <span style="font-weight:400;color:#aaa;font-size:11px">(from Maps URL)</span></label><input type="text" id="fPlaceId" placeholder="ChIJ..."></div>
       <div class="fg" style="grid-column:1/-1">
         <label>Google Maps Link * <span style="font-weight:400;color:#aaa;font-size:11px">Paste the link from Google Maps — we extract coordinates automatically</span></label>
         <input type="url" id="fMapsLink" placeholder="https://maps.app.goo.gl/... or paste a full Google Maps URL">
@@ -248,9 +248,21 @@
           <input type="checkbox" id="fNoMaps" onchange="toggleNoMaps(this)" style="width:14px;height:14px;cursor:pointer;accent-color:#1b3a2d">
           I don't have a Google Maps link right now — add it later
         </label>
+        <button type="button" onclick="fetchFromMaps()" id="btnFetch" style="margin-top:8px;background:#f0fdf4;border:1px solid #1b3a2d;color:#1b3a2d;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;">
+          🔍 Fetch Rating &amp; Reviews from Google Maps
+        </button>
       </div>
-      <div class="fg"><label>Rating (0–5)</label><input type="number" id="fRating" placeholder="4.8" min="0" max="5" step="0.1"></div>
-      <div class="fg"><label>No. of Reviews</label><input type="number" id="fReviews" placeholder="21" min="0"></div>
+      <div class="fg">
+        <label>Rating <span style="font-weight:400;color:#aaa;font-size:11px">Auto-fetched from Google Maps</span></label>
+        <div style="display:flex;gap:6px;align-items:center">
+          <input type="number" id="fRating" placeholder="e.g. 4.7" min="0" max="5" step="0.1" style="flex:1">
+          <span id="fetchStatus" style="font-size:11px;color:#888"></span>
+        </div>
+      </div>
+      <div class="fg">
+        <label>No. of Reviews <span style="font-weight:400;color:#aaa;font-size:11px">Auto-fetched from Google Maps</span></label>
+        <input type="number" id="fReviews" placeholder="e.g. 47" min="0">
+      </div>
     </div>
     <div class="grid1" style="margin-top:.75rem">
       <div class="fg"><label>Card Snippet <span style="font-weight:400;color:#aaa;font-size:11px">(shown to students on the card)</span></label>
@@ -552,7 +564,7 @@ async function saveHostel() {
     lat:      coords?.lat || null,
     lng:      coords?.lng || null,
     phone:    document.getElementById('fPhone').value.trim() || null,
-    place_id: document.getElementById('fPlaceId').value.trim() || null,
+
     rating:   parseFloat(document.getElementById('fRating').value) || 0,
     reviews:  parseInt(document.getElementById('fReviews').value) || 0,
     snippet:  document.getElementById('fSnippet').value.trim() || null,
