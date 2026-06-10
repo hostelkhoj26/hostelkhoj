@@ -484,6 +484,7 @@ function onCollegeSelect() {
   activeCollege = val;
   document.getElementById('activeCollegeName').textContent = COLLEGES[val].name;
   document.getElementById('collegeActiveBar').classList.add('show');
+  track('college_search', COLLEGES[val].name);
   filterAndRender();
   if (gmap) { gmap.panTo({lat:COLLEGES[val].lat, lng:COLLEGES[val].lng}); gmap.setZoom(15); placeCollegeMk(val); }
 }
@@ -512,6 +513,7 @@ function setType(val, btn) {
   activeType = val;
   document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  track('filter_type', val);
   filterAndRender();
 }
 
@@ -526,6 +528,16 @@ function getVisible() {
     if (area && h.area !== area) return false;
     return true;
   }).sort((a,b) => (b.featured-a.featured) || (b.rating-a.rating));
+}
+
+/* ── GA EVENT TRACKING ── */
+function track(action, hostelName, extra) {
+  if (typeof gtag === 'undefined') return;
+  gtag('event', action, {
+    event_category: 'Hostel Interaction',
+    event_label: hostelName || '',
+    value: extra || 0
+  });
 }
 
 /* ── RENDER ── */
@@ -559,9 +571,9 @@ function filterAndRender() {
       ${activeCollege ? `<div class="hc-college-row">${h.colleges.filter(c=>COLLEGES[c]).map(c=>`<span class="hc-ctag">🎓 ${COLLEGES[c].name}</span>`).join('')}</div>` : ''}
       <p class="hc-review">"${h.snippet}"</p>
       <div class="hc-btns">
-        <button class="btn btn-enquire" onclick="event.stopPropagation();openEnquiry(${h.id})">Enquire</button>
-        <a href="${mapsURL(h)}" target="_blank" rel="noopener" class="btn btn-map" onclick="event.stopPropagation()">📍 Location</a>
-        ${h.phone ? `<a href="tel:${h.phone}" class="btn btn-call" onclick="event.stopPropagation()">📞</a>` : ''}
+        <button class="btn btn-enquire" onclick="event.stopPropagation();track('enquire_click','${h.name.replace(/'/g,"\\'")}');openEnquiry(${h.id})">Enquire</button>
+        <a href="${mapsURL(h)}" target="_blank" rel="noopener" class="btn btn-map" onclick="event.stopPropagation();track('location_click','${h.name.replace(/'/g,"\\'")}')">📍 Location</a>
+        ${h.phone ? `<a href="tel:${h.phone}" class="btn btn-call" onclick="event.stopPropagation();track('call_click','${h.name.replace(/'/g,"\\'")}')">📞</a>` : ''}
       </div>
     </div>`).join('');
 
@@ -644,6 +656,7 @@ function submitEnquiry() {
   const district=document.getElementById('enqDistrict').value.trim(), msg=document.getElementById('enqMsg').value.trim();
   if (!name||!phone) { alert('Please enter your name and phone number.'); return; }
   const h=enqHostel;
+  track('enquiry_submitted', h.name);
   window.open(`mailto:hostelkhoj26@gmail.com?subject=${encodeURIComponent('HostelKhoj Enquiry: '+h.name)}&body=${encodeURIComponent('New student enquiry via HostelKhoj\n━━━━━━━━━━━━━━━━━━━━\nHOSTEL: '+h.name+'\nADDRESS: '+h.addr+'\n━━━━━━━━━━━━━━━━━━━━\nSTUDENT: '+name+'\nPHONE: '+phone+'\nFROM: '+(district||'Not specified')+'\nMESSAGE: '+(msg||'None')+'\n━━━━━━━━━━━━━━━━━━━━')}`);
   closeEnquiry();
 }
