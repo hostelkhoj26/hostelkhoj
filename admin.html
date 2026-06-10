@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — HostelKhoj</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f7f8f5; color: #1a1a1a; font-size: 14px; }
+
+    /* ── LOGIN ── */
+    .login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #1b3a2d; }
+    .login-card { background: #fff; border-radius: 16px; padding: 2.5rem; width: 100%; max-width: 380px; }
+    .login-logo { font-size: 24px; font-weight: 700; color: #1b3a2d; text-align: center; margin-bottom: .25rem; }
+    .login-logo span { color: #d4a843; }
+    .login-sub { font-size: 12px; color: #aaa; text-align: center; margin-bottom: 2rem; }
+    .input { width: 100%; padding: 10px 13px; border: 1px solid #e0ddd6; border-radius: 9px; font-size: 14px; font-family: inherit; outline: none; margin-bottom: .75rem; transition: border-color .12s; }
+    .input:focus { border-color: #1b3a2d; }
+    .btn-login { width: 100%; background: #1b3a2d; color: #fff; border: none; padding: 11px; border-radius: 9px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .15s; }
+    .btn-login:hover { background: #2a5a3d; }
+    .login-err { font-size: 12px; color: #e84c3d; text-align: center; margin-top: .6rem; min-height: 18px; }
+
+    /* ── ADMIN SHELL ── */
+    .admin { display: none; min-height: 100vh; }
+    .top-nav { background: #1b3a2d; height: 56px; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .nav-brand { font-size: 18px; font-weight: 700; color: #fff; }
+    .nav-brand span { color: #d4a843; }
+    .nav-brand small { font-size: 11px; font-weight: 400; color: rgba(255,255,255,.35); margin-left: 6px; }
+    .btn-signout { background: rgba(255,255,255,.1); color: rgba(255,255,255,.75); border: none; padding: 6px 14px; border-radius: 7px; font-size: 13px; cursor: pointer; font-family: inherit; }
+    .btn-signout:hover { background: rgba(255,255,255,.18); }
+
+    .page { padding: 1.5rem; max-width: 1080px; margin: 0 auto; }
+
+    /* ── STATS ── */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+    .stat { background: #fff; border: 1px solid #e8e4d8; border-radius: 12px; padding: 1rem 1.25rem; }
+    .stat-n { font-size: 30px; font-weight: 700; color: #1b3a2d; line-height: 1; }
+    .stat-l { font-size: 12px; color: #888; margin-top: 4px; }
+
+    /* ── TABLE SECTION ── */
+    .section-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: .9rem; }
+    .section-bar h2 { font-size: 15px; font-weight: 700; }
+    .btn-add { background: #d4a843; color: #1b3a2d; border: none; padding: 9px 18px; border-radius: 9px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 5px; }
+    .btn-add:hover { background: #e0b84a; }
+
+    .tbl-wrap { background: #fff; border: 1px solid #e8e4d8; border-radius: 13px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    th { background: #f7f8f5; padding: 9px 14px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #888; border-bottom: 1px solid #e8e4d8; }
+    td { padding: 11px 14px; border-bottom: 1px solid #f0ede6; vertical-align: middle; font-size: 13px; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fdfcf8; }
+
+    .thumb { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; background: #e8e4d8; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .thumb img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; }
+    .h-name { font-weight: 600; }
+    .h-addr { font-size: 11px; color: #aaa; margin-top: 2px; }
+    .badge { padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .badge-boys { background: #dbeafe; color: #1e40af; }
+    .badge-girls { background: #fce7f3; color: #9d174d; }
+    .badge-both { background: #d1fae5; color: #065f46; }
+
+    .toggle { position: relative; display: inline-block; width: 36px; height: 20px; cursor: pointer; }
+    .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .tog-track { position: absolute; inset: 0; background: #e0ddd6; border-radius: 20px; transition: background .2s; }
+    .tog-track::before { content: ''; position: absolute; width: 14px; height: 14px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: transform .2s; }
+    input:checked ~ .tog-track { background: #1b3a2d; }
+    input:checked ~ .tog-track::before { transform: translateX(16px); }
+    .toggle.gold input:checked ~ .tog-track { background: #d4a843; }
+
+    .act { display: flex; gap: 5px; }
+    .act-btn { background: #f5f2eb; border: 1px solid #e0ddd6; border-radius: 7px; padding: 5px 11px; font-size: 12px; cursor: pointer; font-family: inherit; transition: all .12s; white-space: nowrap; }
+    .act-btn:hover { background: #ede9e0; }
+    .act-btn.red { color: #e84c3d; }
+    .act-btn.red:hover { background: #fef2f2; border-color: #fecaca; }
+
+    .empty-row { text-align: center; padding: 3rem; color: #aaa; font-size: 13px; }
+
+    /* ── MODALS ── */
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 500; overflow-y: auto; padding: 1.5rem; }
+    .overlay.open { display: flex; align-items: flex-start; justify-content: center; }
+    .modal { background: #fff; border-radius: 16px; width: 100%; max-width: 640px; margin: auto; padding: 1.75rem; }
+    .modal-hd { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+    .modal-hd h3 { font-size: 16px; font-weight: 700; }
+    .close-btn { background: #f5f2eb; border: none; border-radius: 7px; width: 28px; height: 28px; cursor: pointer; font-size: 15px; }
+    .close-btn:hover { background: #ede9e0; }
+
+    .sec-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: #bbb; margin: 1.1rem 0 .7rem; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+    .grid1 { display: grid; grid-template-columns: 1fr; gap: .9rem; }
+    .fg label { display: block; font-size: 12px; font-weight: 700; color: #444; margin-bottom: 4px; }
+    .fg input, .fg select, .fg textarea {
+      width: 100%; padding: 9px 12px; border: 1px solid #e0ddd6; border-radius: 8px;
+      font-size: 13px; font-family: inherit; outline: none; transition: border-color .12s;
+    }
+    .fg input:focus, .fg select:focus, .fg textarea:focus { border-color: #1b3a2d; }
+    .fg textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+    .fg select { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; }
+
+    .college-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .c-chip { display: flex; align-items: center; gap: 5px; background: #f7f8f5; border: 1px solid #e0ddd6; border-radius: 7px; padding: 5px 11px; cursor: pointer; font-size: 12px; user-select: none; transition: all .12s; }
+    .c-chip:hover { border-color: #1b3a2d; }
+    .c-chip.on { background: #f0fdf4; border-color: #1b3a2d; color: #1b3a2d; font-weight: 600; }
+    .c-chip input { display: none; }
+
+    .modal-foot { display: flex; justify-content: flex-end; gap: 8px; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e8e4d8; }
+    .btn-cancel { background: #f5f2eb; color: #555; border: none; padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
+    .btn-save { background: #1b3a2d; color: #fff; border: none; padding: 9px 22px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+    .btn-save:hover { background: #2a5a3d; }
+    .btn-save:disabled { opacity: .6; cursor: not-allowed; }
+
+    /* ── IMAGE MODAL ── */
+    .img-modal { max-width: 680px; }
+    .upload-zone { border: 2px dashed #e0ddd6; border-radius: 11px; padding: 1.75rem; text-align: center; cursor: pointer; transition: border-color .15s; }
+    .upload-zone:hover { border-color: #1b3a2d; background: #fafaf7; }
+    .upload-zone .uz-icon { font-size: 30px; margin-bottom: .4rem; }
+    .upload-zone p { font-size: 13px; color: #888; }
+    .upload-zone small { font-size: 11px; color: #bbb; }
+    .up-prog { font-size: 12px; color: #888; text-align: center; margin-top: .6rem; display: none; }
+    .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 1rem; }
+    .img-cell { position: relative; border-radius: 9px; overflow: hidden; border: 2.5px solid transparent; }
+    .img-cell.is-hero { border-color: #d4a843; }
+    .img-cell img { width: 100%; height: 95px; object-fit: cover; display: block; }
+    .img-cell-btns { position: absolute; top: 4px; right: 4px; display: flex; gap: 3px; }
+    .ic-btn { width: 26px; height: 26px; border-radius: 6px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: background .12s; }
+    .ic-star { background: rgba(255,255,255,.88); }
+    .ic-star.on { background: #d4a843; }
+    .ic-del { background: rgba(255,255,255,.88); color: #e84c3d; }
+    .ic-del:hover { background: #fee2e2; }
+    .hero-tag { position: absolute; bottom: 4px; left: 4px; background: #d4a843; color: #fff; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; }
+    .no-photos { font-size: 13px; color: #aaa; text-align: center; padding: 1rem 0; }
+
+    /* ── TOAST ── */
+    .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: #1b3a2d; color: #fff; padding: 11px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 9999; transform: translateY(80px); opacity: 0; transition: all .25s; pointer-events: none; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.err { background: #e84c3d; }
+
+    @media (max-width: 650px) {
+      .stats { grid-template-columns: 1fr 1fr; }
+      .grid2 { grid-template-columns: 1fr; }
+      .page { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-page" id="loginPage">
+  <div class="login-card">
+    <div class="login-logo">Hostel<span>Khoj</span></div>
+    <p class="login-sub">Admin Dashboard — Sign in to manage listings</p>
+    <input class="input" type="email" id="lEmail" placeholder="admin@hostelkhoj.com">
+    <input class="input" type="password" id="lPass" placeholder="Password" onkeydown="if(event.key==='Enter')login()">
+    <button class="btn-login" onclick="login()">Sign In →</button>
+    <p class="login-err" id="lErr"></p>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="admin" id="adminPage">
+  <nav class="top-nav">
+    <span class="nav-brand">Hostel<span>Khoj</span> <small>Admin</small></span>
+    <button class="btn-signout" onclick="logout()">Sign Out</button>
+  </nav>
+  <div class="page">
+    <div class="stats">
+      <div class="stat"><div class="stat-n" id="sTotal">—</div><div class="stat-l">Total Hostels</div></div>
+      <div class="stat"><div class="stat-n" id="sFeatured">—</div><div class="stat-l">Featured</div></div>
+      <div class="stat"><div class="stat-n" id="sActive">—</div><div class="stat-l">Active</div></div>
+      <div class="stat"><div class="stat-n" id="sHidden">—</div><div class="stat-l">Hidden</div></div>
+    </div>
+    <div class="section-bar">
+      <h2>All Hostels</h2>
+      <button class="btn-add" onclick="openForm(null)">+ Add Hostel</button>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:52px">Photo</th>
+            <th>Hostel</th>
+            <th>Type</th>
+            <th>Area</th>
+            <th>Rating</th>
+            <th>Featured</th>
+            <th>Active</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"><tr><td colspan="8" class="empty-row">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- HOSTEL FORM MODAL -->
+<div class="overlay" id="formOverlay">
+  <div class="modal">
+    <div class="modal-hd">
+      <h3 id="formTitle">Add Hostel</h3>
+      <button class="close-btn" onclick="closeForm()">✕</button>
+    </div>
+    <input type="hidden" id="fId">
+    <div class="sec-label">Basic Info</div>
+    <div class="grid2">
+      <div class="fg"><label>Hostel Name *</label><input type="text" id="fName" placeholder="e.g. Padma Girls Hostel"></div>
+      <div class="fg"><label>Type *</label>
+        <select id="fType">
+          <option value="">— Select —</option>
+          <option value="boys">Boys</option>
+          <option value="girls">Girls</option>
+          <option value="both">Boys & Girls</option>
+        </select>
+      </div>
+      <div class="fg"><label>Full Address *</label><input type="text" id="fAddr" placeholder="e.g. Manbhawan Marg, Kumaripati"></div>
+      <div class="fg"><label>Area *</label>
+        <select id="fArea">
+          <option value="">— Select —</option>
+          <option value="baneshwor">Baneshwor</option>
+          <option value="koteshwor">Koteshwor</option>
+          <option value="kumaripati">Kumaripati</option>
+          <option value="pulchowk">Pulchowk</option>
+        </select>
+      </div>
+      <div class="fg"><label>Phone</label><input type="tel" id="fPhone" placeholder="+977 98XXXXXXXX"></div>
+      <div class="fg"><label>Google Place ID <span style="font-weight:400;color:#aaa;font-size:11px">(from Maps URL)</span></label><input type="text" id="fPlaceId" placeholder="ChIJ..."></div>
+      <div class="fg"><label>Latitude * <span style="font-weight:400;color:#aaa;font-size:11px">(from Google Maps)</span></label><input type="number" id="fLat" placeholder="27.6712" step="any"></div>
+      <div class="fg"><label>Longitude *</label><input type="number" id="fLng" placeholder="85.3164" step="any"></div>
+      <div class="fg"><label>Rating (0–5)</label><input type="number" id="fRating" placeholder="4.8" min="0" max="5" step="0.1"></div>
+      <div class="fg"><label>No. of Reviews</label><input type="number" id="fReviews" placeholder="21" min="0"></div>
+    </div>
+    <div class="grid1" style="margin-top:.75rem">
+      <div class="fg"><label>Card Snippet <span style="font-weight:400;color:#aaa;font-size:11px">(shown to students on the card)</span></label>
+        <textarea id="fSnippet" placeholder="Short, honest description of the hostel..."></textarea>
+      </div>
+    </div>
+    <div class="sec-label">Nearby Colleges</div>
+    <div class="college-chips" id="fColleges">
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="ioe">IOE Pulchowk</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="prasadi">Prasadi Academy</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="bluebird">Bluebird College</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="united">United Academy</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="shankerdev">Shanker Dev Campus</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="trichandra">Tri-Chandra Campus</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="ncommerce">Nepal Commerce Campus</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="patan">Patan Multiple Campus</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="xavier">St. Xavier's College</label>
+      <label class="c-chip" onclick="toggleChip(this)"><input type="checkbox" value="balkumari">Balkumari College</label>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeForm()">Cancel</button>
+      <button class="btn-save" id="btnSave" onclick="saveHostel()">Save Hostel</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE MODAL -->
+<div class="overlay" id="imgOverlay">
+  <div class="modal img-modal">
+    <div class="modal-hd">
+      <h3 id="imgTitle">Manage Photos</h3>
+      <button class="close-btn" onclick="closeImgModal()">✕</button>
+    </div>
+    <label class="upload-zone" for="fileInput">
+      <div class="uz-icon">📷</div>
+      <p>Click to upload photos</p>
+      <small>JPG, PNG, WEBP · Max 5MB each · Multiple allowed</small>
+    </label>
+    <input type="file" id="fileInput" accept="image/*" multiple style="display:none" onchange="uploadImages(event)">
+    <p class="up-prog" id="upProg">Uploading photos...</p>
+    <div class="img-grid" id="imgGrid"></div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeImgModal()">Done</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════
+   CONFIG — fill these in
+══════════════════════════ */
+const SUPABASE_URL      = 'https://wduarorcbsqyykfvosrz.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkdWFyb3JjYnNxeXlrZnZvc3J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwNTc0MjcsImV4cCI6MjA5NjYzMzQyN30.CMsUdoAwMqA12LrRynFoxb0LV5_nQyBfJlwgvmNR4Rg';
+/* ═════════════════════════ */
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let hostels = [];
+let imgHostel = null;
+
+/* ── AUTH ── */
+async function login() {
+  const email = document.getElementById('lEmail').value.trim();
+  const pass  = document.getElementById('lPass').value;
+  const err   = document.getElementById('lErr');
+  err.textContent = '';
+  if (!email || !pass) { err.textContent = 'Please enter email and password.'; return; }
+  const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+  if (error) { err.textContent = error.message; return; }
+  showAdmin();
+}
+async function logout() {
+  await sb.auth.signOut();
+  document.getElementById('adminPage').style.display = 'none';
+  document.getElementById('loginPage').style.display = 'flex';
+}
+function showAdmin() {
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('adminPage').style.display = 'block';
+  loadHostels();
+}
+sb.auth.onAuthStateChange((_, session) => { if (session) showAdmin(); });
+
+/* ── DATA ── */
+async function loadHostels() {
+  const { data, error } = await sb.from('hostels').select('*')
+    .order('featured', { ascending: false }).order('rating', { ascending: false });
+  if (error) { toast('Failed to load hostels', true); return; }
+  hostels = data || [];
+  renderStats();
+  renderTable();
+}
+
+function renderStats() {
+  document.getElementById('sTotal').textContent    = hostels.length;
+  document.getElementById('sFeatured').textContent = hostels.filter(h => h.featured).length;
+  document.getElementById('sActive').textContent   = hostels.filter(h => h.active).length;
+  document.getElementById('sHidden').textContent   = hostels.filter(h => !h.active).length;
+}
+
+function badgeClass(t) { return t === 'both' ? 'badge-both' : t === 'girls' ? 'badge-girls' : 'badge-boys'; }
+function badgeLabel(t) { return t === 'both' ? 'Boys & Girls' : t === 'girls' ? 'Girls' : 'Boys'; }
+
+function renderTable() {
+  const tb = document.getElementById('tbody');
+  if (!hostels.length) {
+    tb.innerHTML = `<tr><td colspan="8" class="empty-row">No hostels yet. Click "+ Add Hostel" to get started.</td></tr>`;
+    return;
+  }
+  tb.innerHTML = hostels.map(h => `
+    <tr>
+      <td>
+        ${h.hero_image_url
+          ? `<div class="thumb"><img src="${h.hero_image_url}" alt=""></div>`
+          : `<div class="thumb">🏠</div>`}
+      </td>
+      <td>
+        <div class="h-name">${h.name}</div>
+        <div class="h-addr">${h.addr || ''}</div>
+      </td>
+      <td><span class="badge ${badgeClass(h.type)}">${badgeLabel(h.type)}</span></td>
+      <td style="text-transform:capitalize">${h.area || '—'}</td>
+      <td>${h.rating ? `⭐ ${parseFloat(h.rating).toFixed(1)}` : '—'}</td>
+      <td>
+        <label class="toggle gold" title="Toggle Featured">
+          <input type="checkbox" ${h.featured ? 'checked' : ''} onchange="toggleField(${h.id},'featured',this.checked)">
+          <span class="tog-track"></span>
+        </label>
+      </td>
+      <td>
+        <label class="toggle" title="Toggle Active">
+          <input type="checkbox" ${h.active ? 'checked' : ''} onchange="toggleField(${h.id},'active',this.checked)">
+          <span class="tog-track"></span>
+        </label>
+      </td>
+      <td>
+        <div class="act">
+          <button class="act-btn" onclick="openForm(${h.id})">✏ Edit</button>
+          <button class="act-btn" onclick="openImgModal(${h.id})">📷 Photos</button>
+          <button class="act-btn red" onclick="deleteHostel(${h.id},'${h.name.replace(/'/g,"\\'")}')">🗑</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+async function toggleField(id, field, val) {
+  const { error } = await sb.from('hostels').update({ [field]: val }).eq('id', id);
+  if (error) { toast('Update failed', true); return; }
+  const h = hostels.find(x => x.id === id);
+  if (h) h[field] = val;
+  renderStats();
+  toast(field === 'featured'
+    ? (val ? '⭐ Marked as Featured' : 'Removed from Featured')
+    : (val ? '✓ Hostel is now Active' : 'Hostel is now Hidden'));
+}
+
+async function deleteHostel(id, name) {
+  if (!confirm(`Remove "${name}" permanently? This cannot be undone.`)) return;
+  const { error } = await sb.from('hostels').delete().eq('id', id);
+  if (error) { toast('Delete failed', true); return; }
+  hostels = hostels.filter(h => h.id !== id);
+  renderStats(); renderTable();
+  toast(`"${name}" removed`);
+}
+
+/* ── HOSTEL FORM ── */
+function openForm(id) {
+  const h = id ? hostels.find(x => x.id === id) : null;
+  document.getElementById('formTitle').textContent = h ? 'Edit Hostel' : 'Add New Hostel';
+  document.getElementById('fId').value      = h?.id || '';
+  document.getElementById('fName').value    = h?.name || '';
+  document.getElementById('fType').value    = h?.type || '';
+  document.getElementById('fAddr').value    = h?.addr || '';
+  document.getElementById('fArea').value    = h?.area || '';
+  document.getElementById('fPhone').value   = h?.phone || '';
+  document.getElementById('fPlaceId').value = h?.place_id || '';
+  document.getElementById('fLat').value     = h?.lat || '';
+  document.getElementById('fLng').value     = h?.lng || '';
+  document.getElementById('fRating').value  = h?.rating || '';
+  document.getElementById('fReviews').value = h?.reviews || '';
+  document.getElementById('fSnippet').value = h?.snippet || '';
+  document.querySelectorAll('#fColleges .c-chip').forEach(el => {
+    const v = el.querySelector('input').value;
+    const on = h?.colleges?.includes(v) || false;
+    el.classList.toggle('on', on);
+    el.querySelector('input').checked = on;
+  });
+  document.getElementById('formOverlay').classList.add('open');
+}
+
+function closeForm() { document.getElementById('formOverlay').classList.remove('open'); }
+
+function toggleChip(el) {
+  el.classList.toggle('on');
+  el.querySelector('input').checked = el.classList.contains('on');
+}
+
+async function saveHostel() {
+  const id   = document.getElementById('fId').value;
+  const name = document.getElementById('fName').value.trim();
+  const type = document.getElementById('fType').value;
+  const addr = document.getElementById('fAddr').value.trim();
+  const area = document.getElementById('fArea').value;
+  const lat  = parseFloat(document.getElementById('fLat').value);
+  const lng  = parseFloat(document.getElementById('fLng').value);
+  if (!name || !type || !addr || !area || isNaN(lat) || isNaN(lng)) {
+    toast('Please fill in all required fields', true); return;
+  }
+  const colleges = [...document.querySelectorAll('#fColleges input:checked')].map(i => i.value);
+  const data = {
+    name, type, addr, area, lat, lng, colleges, active: true,
+    phone:    document.getElementById('fPhone').value.trim() || null,
+    place_id: document.getElementById('fPlaceId').value.trim() || null,
+    rating:   parseFloat(document.getElementById('fRating').value) || 0,
+    reviews:  parseInt(document.getElementById('fReviews').value) || 0,
+    snippet:  document.getElementById('fSnippet').value.trim() || null,
+  };
+  const btn = document.getElementById('btnSave');
+  btn.textContent = 'Saving…'; btn.disabled = true;
+  const { error } = id
+    ? await sb.from('hostels').update(data).eq('id', id)
+    : await sb.from('hostels').insert(data);
+  btn.textContent = 'Save Hostel'; btn.disabled = false;
+  if (error) { toast('Save failed: ' + error.message, true); return; }
+  closeForm();
+  await loadHostels();
+  toast(id ? '✓ Hostel updated!' : '✓ Hostel added!');
+}
+
+/* ── IMAGE MANAGER ── */
+function openImgModal(id) {
+  imgHostel = hostels.find(h => h.id === id);
+  if (!imgHostel) return;
+  document.getElementById('imgTitle').textContent = `Photos — ${imgHostel.name}`;
+  renderImgGrid();
+  document.getElementById('imgOverlay').classList.add('open');
+}
+function closeImgModal() {
+  document.getElementById('imgOverlay').classList.remove('open');
+  imgHostel = null;
+}
+
+function renderImgGrid() {
+  const imgs  = imgHostel?.images || [];
+  const hero  = imgHostel?.hero_image_url;
+  const grid  = document.getElementById('imgGrid');
+  if (!imgs.length) {
+    grid.innerHTML = '<p class="no-photos">No photos yet. Upload some above.</p>';
+    return;
+  }
+  grid.innerHTML = imgs.map(url => `
+    <div class="img-cell${url === hero ? ' is-hero' : ''}">
+      <img src="${url}" alt="photo">
+      <div class="img-cell-btns">
+        <button class="ic-btn ic-star${url === hero ? ' on' : ''}" onclick="setHero('${url}')" title="Set as hero image">★</button>
+        <button class="ic-btn ic-del" onclick="removeImage('${url}')" title="Delete photo">✕</button>
+      </div>
+      ${url === hero ? '<span class="hero-tag">Hero</span>' : ''}
+    </div>`).join('');
+}
+
+async function uploadImages(e) {
+  const files = [...e.target.files];
+  if (!files.length || !imgHostel) return;
+  const prog = document.getElementById('upProg');
+  prog.style.display = 'block';
+  const newUrls = [];
+  for (const file of files) {
+    if (file.size > 5 * 1024 * 1024) { toast(`${file.name} exceeds 5MB`, true); continue; }
+    const ext  = file.name.split('.').pop();
+    const path = `${imgHostel.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+    const { error: upErr } = await sb.storage.from('hostel-images').upload(path, file);
+    if (upErr) { toast('Upload failed: ' + upErr.message, true); continue; }
+    const { data: { publicUrl } } = sb.storage.from('hostel-images').getPublicUrl(path);
+    newUrls.push(publicUrl);
+  }
+  prog.style.display = 'none';
+  e.target.value = '';
+  if (!newUrls.length) return;
+  const updImgs = [...(imgHostel.images || []), ...newUrls];
+  const updHero = imgHostel.hero_image_url || newUrls[0];
+  const { error } = await sb.from('hostels').update({ images: updImgs, hero_image_url: updHero }).eq('id', imgHostel.id);
+  if (!error) {
+    imgHostel.images = updImgs;
+    imgHostel.hero_image_url = updHero;
+    const h = hostels.find(x => x.id === imgHostel.id);
+    if (h) { h.images = updImgs; h.hero_image_url = updHero; }
+    renderImgGrid(); renderTable();
+    toast(`✓ ${newUrls.length} photo(s) uploaded`);
+  }
+}
+
+async function setHero(url) {
+  const { error } = await sb.from('hostels').update({ hero_image_url: url }).eq('id', imgHostel.id);
+  if (error) { toast('Failed', true); return; }
+  imgHostel.hero_image_url = url;
+  const h = hostels.find(x => x.id === imgHostel.id);
+  if (h) h.hero_image_url = url;
+  renderImgGrid(); renderTable();
+  toast('✓ Hero image updated');
+}
+
+async function removeImage(url) {
+  if (!confirm('Delete this photo?')) return;
+  const path = url.split('/hostel-images/')[1];
+  if (path) await sb.storage.from('hostel-images').remove([path]);
+  const updImgs = (imgHostel.images || []).filter(u => u !== url);
+  const updHero = imgHostel.hero_image_url === url ? (updImgs[0] || null) : imgHostel.hero_image_url;
+  const { error } = await sb.from('hostels').update({ images: updImgs, hero_image_url: updHero }).eq('id', imgHostel.id);
+  if (!error) {
+    imgHostel.images = updImgs;
+    imgHostel.hero_image_url = updHero;
+    const h = hostels.find(x => x.id === imgHostel.id);
+    if (h) { h.images = updImgs; h.hero_image_url = updHero; }
+    renderImgGrid(); renderTable();
+  }
+  toast('Photo deleted');
+}
+
+/* ── TOAST ── */
+function toast(msg, isErr = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast${isErr ? ' err' : ''} show`;
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+</script>
+</body>
+</html>
